@@ -10,6 +10,9 @@ use App\Models\Hotel;
 use App\Models\EmailCode;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
 
 class UserController extends Controller
 {
@@ -159,13 +162,45 @@ class UserController extends Controller
                 $title = "[파이널매칭] 메일 인증 번호"; 
                 $subject = "=?EUC-KR?B?".base64_encode(iconv("UTF-8","EUC-KR",$title))."?=";
                 
-                $headers = "from: dongop@finalmatch.co.kr";
+                //$headers = "from: dongop@finalmatch.co.kr";
                 $content = "파이널매칭 메일 인증 번호 보내드립니다.\n\n 인증번호는 : ".$code." 입니다.";
                 
-                $result = mail($email, $subject, $content, ''); 
+                //$result = mail($email, $subject, $content); 
 
-                //$result = mail($request->email, $request->title, $request->content, '', '-pm@dnsolution.kr');
                 
+                $mail = new PHPMailer(true);         
+                
+                try {
+                    //Server settings
+                    $mail->isSMTP();                                            // Send using SMTP
+                    $mail->Host       = 'smtp.naver.com';                    // Set the SMTP server to send through
+                    $mail->SMTPAuth   = true;                                   // Enable SMTP authentication
+                    $mail->Username   = 'yongho0720';                     // SMTP username
+                    $mail->Password   = 'dydgh123';                               // SMTP password
+                    $mail->CharSet = 'utf-8'; 
+                    $mail->Encoding = "base64";
+                    $mail->SMTPSecure = 'ssl';          
+                    $mail->Port       = 465;                                    // TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
+            
+                    //Recipients
+                    $mail->setFrom('yongho0720@naver.com', '파이널매칭팀');
+            
+                    
+                    $mail->addAddress($email);     // Add a recipient
+                    
+            
+                    // Content
+                    $mail->isHTML(true);                                  // Set email format to HTML
+                    $mail->Subject = $subject;
+                    $mail->Body    = $content;
+            
+                    $mail->send();
+                    echo 'Message has been sent';
+                    $result =  true;
+                } catch (Exception $e) {
+                    //echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+                    $result = false;
+                }
                 
                 if($result){
                     $return->status = "200";
