@@ -64,7 +64,7 @@ class UserController extends Controller
 
                 if($result){
 
-                    Auth::loginUsingId($result);
+                    Auth::loginUsingId($user_id);
                     $login_user = Auth::user();
     
                     $token = $login_user->createToken('user');
@@ -136,7 +136,7 @@ class UserController extends Controller
     }
 
 
-    public function certify_email(Request $request){
+    public function certify_email(Request $request){// 이메일 인증번호 발송
         $return = new \stdClass;
         $email = trim($request->email);
 
@@ -184,7 +184,7 @@ class UserController extends Controller
         echo(json_encode($return));
     }
 
-    public function check_email_code(Request $request){
+    public function check_email_code(Request $request){ // 이메일 인증번호 검증
         
         $return = new \stdClass;
 
