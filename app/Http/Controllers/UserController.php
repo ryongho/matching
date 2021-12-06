@@ -164,7 +164,7 @@ class UserController extends Controller
                 
                 $result = mail($email, $subject, $content, '', '-pm@dnsolution.kr'); 
 
-                $result = mail($request->email, $request->title, $request->content, '', '-pm@dnsolution.kr');
+                //$result = mail($request->email, $request->title, $request->content, '', '-pm@dnsolution.kr');
                 
                 
                 if($result){
