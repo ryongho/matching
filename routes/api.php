@@ -46,9 +46,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     //return $request->partner();
 });*/
 
-Route::put('/user/regist', [UserController::class, 'regist']);
+Route::post('/user/regist', [UserController::class, 'regist']);
 Route::post('/login', [UserController::class, 'login']);
 Route::get('login', [UserController::class, 'not_login'])->name('login');
+Route::post('/user/certify_email', [UserController::class, 'certify_email']);
+Route::get('/user/check_email_code', [UserController::class, 'check_email_code']);
+
 
 Route::middleware('auth:sanctum')->post('/logout', [UserController::class, 'logout']);
 Route::middleware('auth:sanctum')->get('/login_check', [UserController::class, 'login_check']);

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Hotel;
+use App\Models\EmailCode;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 
@@ -111,11 +112,78 @@ class UserController extends Controller
         echo(json_encode($return));
     }
 
+
+    public function certify_email(Request $request){
+        $return = new \stdClass;
+        $email = trim($request->email);
+
+        $email_cnt = User::where('email',$email)->count();
+
+        if($email_cnt){
+            $return->usable = "500";
+            $return->msg = "이미 사용중인 이메일입니다.";
+            $return->email = $email;
+        }else{
+
+            $code = mt_rand(100000,999999);
+            $result_insert = EmailCode::insertGetId([
+                'email' => $email, 
+                'code' => $code, 
+                'created_at' => Carbon::now(),
+            ]);
+
+            if($result_insert){
+                $title = "[파이널매칭] 메일 인증 번호"; 
+                $subject = "=?EUC-KR?B?".base64_encode(iconv("UTF-8","EUC-KR",$title))."?=";
+                
+                $headers = "from: dongop@finalmatch.co.kr";
+                $content = "파이널매칭 메일 인증 번호 보내드립니다.\n\n 인증번호는 : ".$code." 입니다.";
+                
+                $result = mail($email, $subject, $content, '', '-pm@dnsolution.kr'); 
+
+                $result = mail($request->email, $request->title, $request->content, '', '-pm@dnsolution.kr');
+                
+                
+                if($result){
+                    $return->status = "200";
+                    $return->msg = "메일이 발송되었습니다.";
+                }else{
+                    $return->status = "500";
+                    $return->msg = "인증메일 발송 실패";
+                } 
+            }else{
+                $return->status = "500";
+                $return->msg = "코드발급 실패, 관리자에게 문의하세요.";
+            }
+                       
+        }
+
+        echo(json_encode($return));
+    }
+
+    public function check_email_code(Request $request){
+        
+        $return = new \stdClass;
+
+        $cnt = EmailCode::where('code',$request->code)->where('email',$request->email)->count();
+    
+        if($cnt){
+            $return->status = "200";
+            $return->msg = "유효한 인증입니다.";
+            EmailCode::where('code',$request->code)->where('email',$request->email)->delete();
+        }else{
+            $return->status = "200";
+            $return->msg = "잘못된 인증번호 입니다.";
+        }    
+
+        echo(json_encode($return));
+    }
+
     public function login_check(Request $request){
         
         $return = new \stdClass;
-        //$login_user = Auth::user();
-        //$user_id = $login_user->getId();
+        $login_user = Auth::user();
+        $user_id = $login_user->getId();
 
         if(Auth::check()){
             $return->status = "200";
