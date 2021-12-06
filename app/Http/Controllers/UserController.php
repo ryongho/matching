@@ -13,7 +13,7 @@ class UserController extends Controller
 {
     public function regist(Request $request)
     {
-        dd($request);
+        dd($request->name);
         $return = new \stdClass;
 
         $return->status = "500";
@@ -21,8 +21,8 @@ class UserController extends Controller
         $return->data = $request->user_id;
 
         /* 중복 체크 - start*/
-        $email_cnt = User::where('email',$request->email)->count();
-        $phone_cnt = User::where('phone',$request->phone)->count();
+        //$email_cnt = User::where('email',$request->email)->count();
+        //$phone_cnt = User::where('phone',$request->phone)->count();
 
         /*if($email_cnt){
             $return->status = "602";
