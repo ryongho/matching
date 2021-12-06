@@ -46,7 +46,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     //return $request->partner();
 });*/
 
-Route::put('/regist', [UserController::class, 'regist']);
+Route::put('/user/regist', [UserController::class, 'regist']);
 Route::post('/login', [UserController::class, 'login']);
 Route::get('login', [UserController::class, 'not_login'])->name('login');
 
