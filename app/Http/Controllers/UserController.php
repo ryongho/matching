@@ -162,11 +162,7 @@ class UserController extends Controller
                 $title = "[파이널매칭] 메일 인증 번호"; 
                 $subject = "=?EUC-KR?B?".base64_encode(iconv("UTF-8","EUC-KR",$title))."?=";
                 
-                //$headers = "from: dongop@finalmatch.co.kr";
                 $content = "파이널매칭 메일 인증 번호 보내드립니다.\n\n 인증번호는 : ".$code." 입니다.";
-                
-                //$result = mail($email, $subject, $content); 
-
                 
                 $mail = new PHPMailer(true);         
                 
@@ -195,7 +191,7 @@ class UserController extends Controller
                     $mail->Body    = $content;
             
                     $mail->send();
-                    echo 'Message has been sent';
+                    //echo 'Message has been sent';
                     $result =  true;
                 } catch (Exception $e) {
                     //echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
