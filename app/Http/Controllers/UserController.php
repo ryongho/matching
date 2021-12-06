@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\ApplyInfo;
 use App\Models\Hotel;
 use App\Models\EmailCode;
 use Illuminate\Support\Carbon;
@@ -22,10 +23,10 @@ class UserController extends Controller
         $return->data = $request->user_id;
 
         /* 중복 체크 - start*/
-        //$email_cnt = User::where('email',$request->email)->count();
-        //$phone_cnt = User::where('phone',$request->phone)->count();
+        $email_cnt = User::where('email',$request->email)->count();
+        $phone_cnt = User::where('phone',$request->phone)->count();
 
-        /*if($email_cnt){
+        if($email_cnt){
             $return->status = "602";
             $return->msg = "사용중인 이메일";
             $return->data = $request->email;
@@ -34,34 +35,56 @@ class UserController extends Controller
             $return->msg = "사용중인 폰 번호";
             $return->data = $request->phone;
         //중복 체크 - end
-        }else{*/
-            $result = User::insertGetId([
+        }else{
+            $user_id = User::insertGetId([
                 'name'=> $request->name ,
-                'nickname'=> $request->nickname ,
-                'email' => $request->email, 
-                'password' => $request->password, 
-                'user_id' => $request->user_id,
+                'email' => $request->email,                 
                 'phone' => $request->phone, 
-                'user_type' => $request->user_type,
-                'push' => $request->push,
-                'push_event' => $request->push_event,
+                'user_type' => 0,
+                'push' => 'Y',
+                'push_event' => 'Y',
                 'created_at' => Carbon::now(),
                 'password' => Hash::make($request->password)
             ]);
 
-            if($result){
+            if($user_id){
+                $result = ApplyInfo::insertGetId([
+                    'user_id'=> $user_id ,
+                    'addr1' => $request->addr1,                 
+                    'addr2' => $request->addr2,
+                    'birthday' => $request->birthday,
+                    'gender' => $request->gender,
+                    'career_type' => $request->career_type,
+                    'last_position' => $request->last_position,
+                    'interest' => $request->interest,
+                    'condition' => $request->condition,
+                    'min_pay' => $request->min_pay, 
+                    'created_at' => Carbon::now()
+                ]);
 
-                Auth::loginUsingId($result);
-                $login_user = Auth::user();
+                if($result){
 
-                $token = $login_user->createToken('user');
+                    Auth::loginUsingId($result);
+                    $login_user = Auth::user();
+    
+                    $token = $login_user->createToken('user');
+    
+                    $return->status = "200";
+                    $return->msg = "success";
+                    $return->data = $request->name;
+                    $return->token = $token->plainTextToken;
+                }
 
-                $return->status = "200";
-                $return->msg = "success";
-                $return->data = $request->name;
-                $return->token = $token->plainTextToken;
+                
+            }else{
+                $return->status = "500";
+                $return->msg = "회원등록 실패";
             }
-        //}
+
+            
+            
+            
+        }
         
 
         echo(json_encode($return));
