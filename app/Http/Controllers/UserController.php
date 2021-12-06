@@ -162,7 +162,7 @@ class UserController extends Controller
                 $headers = "from: dongop@finalmatch.co.kr";
                 $content = "파이널매칭 메일 인증 번호 보내드립니다.\n\n 인증번호는 : ".$code." 입니다.";
                 
-                $result = mail($email, $subject, $content, '', '-pm@dnsolution.kr'); 
+                $result = mail($email, $subject, $content, ''); 
 
                 //$result = mail($request->email, $request->title, $request->content, '', '-pm@dnsolution.kr');
                 
