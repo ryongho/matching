@@ -13,7 +13,7 @@ class UserController extends Controller
 {
     public function regist(Request $request)
     {
-        //dd($request);
+        dd($request);
         $return = new \stdClass;
 
         $return->status = "500";
