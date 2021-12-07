@@ -8,6 +8,9 @@ use App\Models\User;
 use App\Models\ApplyInfo;
 use App\Models\Hotel;
 use App\Models\EmailCode;
+use App\Models\CompanyImage;
+use App\Models\FinancialImage;
+use App\Models\CompanyInfo;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 use PHPMailer\PHPMailer\PHPMailer;
@@ -107,7 +110,7 @@ class UserController extends Controller
         /* 중복 체크 - start*/
         $email_cnt = User::where('email',$request->email)->count();
         $phone_cnt = User::where('phone',$request->phone)->count();
-        dd($request);
+        
         if($email_cnt){
             $return->status = "602";
             $return->msg = "사용중인 이메일";
@@ -132,10 +135,10 @@ class UserController extends Controller
             if($user_id){
                 $result = CompanyInfo::insertGetId([
                     'user_id'=> $user_id ,
-                    'comapny_name' => $request->comapny_name,                 
-                    'biz_item' => $request->item,
-                    'biz_type' => $request->type,
-                    'reg_no' => $request->gender,
+                    'company_name' => $request->company_name,                 
+                    'biz_item' => $request->biz_item,
+                    'biz_type' => $request->biz_type,
+                    'reg_no' => $request->reg_no,
                     'job_type' => $request->job_type,
                     'history' => $request->history,
                     'addr1' => $request->addr1,
@@ -152,7 +155,39 @@ class UserController extends Controller
                     'created_at' => Carbon::now()
                 ]);
 
-                if($result){
+                if($result){ //DB 입력 성공
+
+                    $no = 1; 
+    
+                    $cimages = explode(",",$request->com_img);
+                    foreach( $cimages as $cimage){
+                    
+                        $result_img = CompanyImage::insertGetId([
+                            'user_id'=> $result ,
+                            'file_name'=> $cimage ,
+                            'order_no'=> $no ,
+                            'created_at' => Carbon::now()
+                        ]);
+    
+                        $no++;
+                    }
+                    
+                    $no2 = 1; 
+    
+                    $fimages = explode(",",$request->financial_img);
+                    foreach( $fimages as $fimage){
+                    
+                        $result_img = FinancialImage::insertGetId([
+                            'user_id'=> $result ,
+                            'file_name'=> $fimage ,
+                            'order_no'=> $no2 ,
+                            'created_at' => Carbon::now()
+                        ]);
+    
+                        $no2++;
+                    }
+    
+
 
                     Auth::loginUsingId($user_id);
                     $login_user = Auth::user();
@@ -163,7 +198,9 @@ class UserController extends Controller
                     $return->msg = "success";
                     $return->data = $request->name;
                     $return->token = $token->plainTextToken;
+
                 }
+
 
                 
             }else{
