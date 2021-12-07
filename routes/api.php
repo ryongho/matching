@@ -144,7 +144,7 @@ Route::middleware('auth:sanctum')->put('/reservation/update', [ReservationContro
 Route::middleware('auth:sanctum')->put('/reservation/request_confirm', [ReservationController::class, 'request_confirm']);
 
 
-Route::middleware('auth:sanctum')->post('/image/upload', [ImageController::class, 'upload']);
+Route::post('/image/upload', [ImageController::class, 'upload']);
 
 Route::middleware('auth:sanctum')->put('/recommend/regist', [RecommendController::class, 'regist']);
 Route::get('/recommend/list', [RecommendController::class, 'list']);

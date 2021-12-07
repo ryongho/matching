@@ -313,7 +313,7 @@ class UserController extends Controller
             $return->msg = "유효한 인증입니다.";
             EmailCode::where('code',$request->code)->where('email',$request->email)->delete();
         }else{
-            $return->status = "200";
+            $return->status = "500";
             $return->msg = "잘못된 인증번호 입니다.";
         }    
 
