@@ -65,6 +65,7 @@ class UserController extends Controller
                     'interest' => $request->interest,
                     'condition' => $request->condition,
                     'min_pay' => $request->min_pay, 
+                    'profile_img' => $request->profile_img, 
                     'created_at' => Carbon::now()
                 ]);
 
@@ -404,7 +405,7 @@ class UserController extends Controller
     public function new_list(Request $request){
         
         $rows = User::join('apply_infos', 'apply_infos.user_id', '=', 'users.id')
-        ->select('name','profile_img','career_type')->where('user_type','0')->orderBy('users.id', 'desc')->limit(10)->get();
+        ->select('name','profile_img','career_type','interest')->where('user_type','0')->orderBy('users.id', 'desc')->limit(10)->get();
 
         $list = new \stdClass;
 
