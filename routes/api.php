@@ -47,6 +47,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });*/
 
 Route::post('/user/regist', [UserController::class, 'regist']);
+Route::post('/company/regist', [UserController::class, 'regist_company']);
 Route::post('/login', [UserController::class, 'login']);
 Route::get('login', [UserController::class, 'not_login'])->name('login');
 Route::post('/user/certify_email', [UserController::class, 'certify_email']);
@@ -55,8 +56,6 @@ Route::get('/user/check_email_code', [UserController::class, 'check_email_code']
 
 Route::middleware('auth:sanctum')->post('/logout', [UserController::class, 'logout']);
 Route::middleware('auth:sanctum')->get('/login_check', [UserController::class, 'login_check']);
-Route::post('/check_email', [UserController::class, 'check_email']);
-Route::post('/check_nickname', [UserController::class, 'check_nickname']);
 
 Route::put('/partner/regist', [PartnerController::class, 'regist']);
 Route::middleware('auth:sanctum')->get('/partner/list', [PartnerController::class, 'list']);

@@ -95,6 +95,93 @@ class UserController extends Controller
         //return view('user.profile', ['user' => User::findOrFail($id)]);
     }
 
+    public function regist_company(Request $request)
+    {
+        //dd($request);
+        $return = new \stdClass;
+
+        $return->status = "500";
+        $return->msg = "관리자에게 문의";
+        $return->data = $request->user_id;
+
+        /* 중복 체크 - start*/
+        $email_cnt = User::where('email',$request->email)->count();
+        $phone_cnt = User::where('phone',$request->phone)->count();
+        dd($request);
+        if($email_cnt){
+            $return->status = "602";
+            $return->msg = "사용중인 이메일";
+            $return->data = $request->email;
+        }else if ($phone_cnt){
+            $return->status = "603";
+            $return->msg = "사용중인 폰 번호";
+            $return->data = $request->phone;
+        //중복 체크 - end
+        }else{
+            $user_id = User::insertGetId([
+                'name'=> $request->name ,
+                'email' => $request->email,                 
+                'phone' => $request->phone, 
+                'user_type' => 0,
+                'push' => 'Y',
+                'push_event' => 'Y',
+                'created_at' => Carbon::now(),
+                'password' => Hash::make($request->password)
+            ]);
+
+            if($user_id){
+                $result = CompanyInfo::insertGetId([
+                    'user_id'=> $user_id ,
+                    'comapny_name' => $request->comapny_name,                 
+                    'biz_item' => $request->item,
+                    'biz_type' => $request->type,
+                    'reg_no' => $request->gender,
+                    'job_type' => $request->job_type,
+                    'history' => $request->history,
+                    'addr1' => $request->addr1,
+                    'addr2' => $request->addr2,
+                    'introduction' => $request->introduction, 
+                    'members' => $request->members, 
+                    'type' => $request->type, 
+                    'com_size' => $request->com_size, 
+                    'pay' => $request->pay, 
+                    'condition' => $request->condition, 
+                    'investment' => $request->investment, 
+                    'sales' => $request->sales, 
+                    'profit' => $request->profit, 
+                    'created_at' => Carbon::now()
+                ]);
+
+                if($result){
+
+                    Auth::loginUsingId($user_id);
+                    $login_user = Auth::user();
+    
+                    $token = $login_user->createToken('user');
+    
+                    $return->status = "200";
+                    $return->msg = "success";
+                    $return->data = $request->name;
+                    $return->token = $token->plainTextToken;
+                }
+
+                
+            }else{
+                $return->status = "500";
+                $return->msg = "회원등록 실패";
+            }
+
+            
+            
+            
+        }
+        
+
+        echo(json_encode($return));
+
+        //return view('user.profile', ['user' => User::findOrFail($id)]);
+    }
+
     public function login(Request $request){
         $user = User::where('email' , $request->email)->where('leave','N')->first();
 
@@ -275,56 +362,11 @@ class UserController extends Controller
         echo(json_encode($list));
         
     }
-
-    public function check_email(Request $request){
-        
-        //dd($request);
-        $return = new \stdClass;
-
-        /* 중복 체크 - start*/
-        $email_cnt = User::where('email',$request->email)->count();
-
-        if($email_cnt){
-            $return->usable = "N";
-            $return->msg = "사용중인 이메일";
-            $return->email = $request->email;
-        }else{
-            $return->usable = "Y";
-            $return->msg = "사용가능 이메일";
-            $return->email = $request->email;            
-        }
-
-        echo(json_encode($return));
-
-    }  
     
-    public function check_nickname(Request $request){
-        
-        //dd($request);
-        $return = new \stdClass;
-
-        /* 중복 체크 - start*/
-        $nickname_cnt = User::where('nickname',$request->nickname)->count();
-
-        if($nickname_cnt){
-            $return->usable = "N";
-            $return->msg = "사용중인 닉네임";
-            $return->nickname = $request->nickname;
-        }else{
-            $return->usable = "Y";
-            $return->msg = "사용가능 닉네임";
-            $return->nickname = $request->nickname;            
-        }
-
-        echo(json_encode($return));
-
-    }  
 
     public function info(){
         //dd($request);
         $return = new \stdClass;
-
-
         $login_user = Auth::user();
 
         $return->status = "200";
