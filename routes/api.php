@@ -60,6 +60,7 @@ Route::middleware('auth:sanctum')->get('/login_check', [UserController::class, '
 Route::put('/partner/regist', [PartnerController::class, 'regist']);
 Route::middleware('auth:sanctum')->get('/partner/list', [PartnerController::class, 'list']);
 Route::middleware('auth:sanctum')->get('/user/list', [UserController::class, 'list']);
+Route::get('/user/new_list', [UserController::class, 'new_list']);
 Route::middleware('auth:sanctum')->get('/user/info', [UserController::class, 'info']);
 Route::middleware('auth:sanctum')->put('/user/update', [UserController::class, 'update']);
 Route::middleware('auth:sanctum')->put('/user/update_info', [UserController::class, 'update_info']);

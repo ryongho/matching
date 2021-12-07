@@ -125,7 +125,7 @@ class UserController extends Controller
                 'name'=> $request->name ,
                 'email' => $request->email,                 
                 'phone' => $request->phone, 
-                'user_type' => 0,
+                'user_type' => 1,
                 'push' => 'Y',
                 'push_event' => 'Y',
                 'created_at' => Carbon::now(),
@@ -389,6 +389,22 @@ class UserController extends Controller
         $row = $request->row;
         
         $rows = User::where('id' ,">=", $start_no)->where('user_type','0')->orderBy('id', 'desc')->orderBy('id')->limit($row)->get();
+
+        $list = new \stdClass;
+
+        $list->status = "200";
+        $list->msg = "success";
+        $list->cnt = count($rows);
+        $list->data = $rows;
+        
+        echo(json_encode($list));
+        
+    }
+
+    public function new_list(Request $request){
+        
+        $rows = User::join('apply_infos', 'apply_infos.user_id', '=', 'users.id')
+        ->select('name','profile_img','career_type')->where('user_type','0')->orderBy('users.id', 'desc')->limit(10)->get();
 
         $list = new \stdClass;
 

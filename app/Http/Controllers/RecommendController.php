@@ -24,7 +24,7 @@ class RecommendController extends Controller
         }
     
         $result = Recommend::insertGetId([
-            'goods_id'=> $request->goods_id ,
+            'comapny_id'=> $request->company_id ,
             'order_no'=> $request->order_no ,
             'created_at'=> Carbon::now(),
         ]);
@@ -44,11 +44,8 @@ class RecommendController extends Controller
     public function list(Request $request){
 
 
-        $rows = Recommend::join('goods', 'recommends.goods_id', '=', 'goods.id')
-                        ->join('hotels', 'goods.hotel_id', '=', 'hotels.id')
-                        ->select('*',
-                            DB::raw('(select file_name from goods_images where goods_images.goods_id = recommends.goods_id order by order_no asc limit 1 ) as thumb_nail'),
-                        ) 
+        $rows = Recommend::join('company_infos', 'recommends.comapny_id', '=', 'company_infos.id')
+                        ->select('logo_img','company_name','type','com_size') 
                         ->orderBy('order_no','asc')
                         ->get();
 
