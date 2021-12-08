@@ -54,6 +54,9 @@ Route::post('/user/certify_email', [UserController::class, 'certify_email']);
 Route::get('/user/check_email_code', [UserController::class, 'check_email_code']);
 Route::middleware('auth:sanctum')->post('/profile/regist', [UserController::class, 'regist_profile']);
 Route::middleware('auth:sanctum')->post('/jobhistory/regist', [UserController::class, 'regist_jobhistory']);
+Route::get('/profile/detail', [UserController::class, 'profile_detail']);
+Route::get('/company/detail', [UserController::class, 'company_detail']);
+
 
 
 Route::middleware('auth:sanctum')->post('/logout', [UserController::class, 'logout']);

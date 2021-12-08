@@ -166,7 +166,7 @@ class UserController extends Controller
                     foreach( $cimages as $cimage){
                     
                         $result_img = CompanyImage::insertGetId([
-                            'user_id'=> $result ,
+                            'company_id'=> $result ,
                             'file_name'=> $cimage ,
                             'order_no'=> $no ,
                             'created_at' => Carbon::now()
@@ -181,7 +181,7 @@ class UserController extends Controller
                     foreach( $fimages as $fimage){
                     
                         $result_img = FinancialImage::insertGetId([
-                            'user_id'=> $result ,
+                            'company_id'=> $result ,
                             'file_name'=> $fimage ,
                             'order_no'=> $no2 ,
                             'created_at' => Carbon::now()
@@ -508,27 +508,113 @@ class UserController extends Controller
         echo(json_encode($list));
         
     }
-    
 
-    public function info(){
-        //dd($request);
-        $return = new \stdClass;
-        $login_user = Auth::user();
+    public function profile_detail(Request $request){
 
-        $return->status = "200";
-        $return->data = $login_user;
+        $rows = User::join('apply_infos', 'apply_infos.user_id', '=', 'users.id')
+                    ->join('profiles', 'profiles.user_id', '=', 'users.id')
+                    ->select(
+                        'profiles.id as profile_id',
+                        'users.id as user_id',
+                        'users.name as name',
+                        'profiles.profile_img as profile_img',
+                        'profiles.academy_type as academy_type',
+                        'profiles.academy_local as academy_local',
+                        'profiles.academy_name as academy_name',
+                        'profiles.academy_major as academy_major',
+                        'profiles.academy_time as academy_time',
+                        'profiles.introduction as introduction',
+                        'profiles.apply_motive as apply_motive',
+                        'profiles.addr as addr',
+                    )
+                    ->where('user_type','0')
+                    ->where('users.id', $request->user_id)
+                    ->first();
 
-        if($login_user->user_type == 1){
-            $hotel_info = Hotel::where('partner_id',$login_user->id)->first();
-            if($hotel_info){
-                $return->hotel_id = $hotel_info->id;
-            }
+        $rows_history =Jobhistory::where('user_id',$request->user_id)
+                        ->select(
+                            'user_id as user_id',
+                            'id as jobhistory_id',
+                            'position as position',
+                            'local as local',
+                            'company_name as company_name',
+                            'department as department',
+                            'pay as pay',
+                            'job_part as job_part',
+                            'start_date as start_date',
+                            'end_date as end_date',
+                            'period_year as period_year',
+                            'period_mon as period_mon',
+                        )
+                        ->get();
+        
+        $rows->jobhistories = $rows_history;                    
+
+        $list = new \stdClass;
+
+        $list->status = "200";
+        $list->msg = "success";
+        $list->data = $rows;
+        
+        echo(json_encode($list));
+        
+    }
+
+    public function company_detail(Request $request){
+
+        $list = new \stdClass;
+
+        
+        $rows = CompanyInfo::where('company_infos.id',$request->company_id)
+                        ->select(
+                            'company_infos.id as company_id',
+                            'logo_img',
+                            'company_name',
+                            'addr1',
+                            'addr2',
+                            'biz_item',
+                            'biz_type',
+                            'reg_no',
+                            'job_type',
+                            'introduction',
+                            'history',
+                            'members',
+                            'type',
+                            'com_size',
+                            'pay',
+                            'condition',
+                            'investment',
+                            'sales',
+                            'profit'
+                        )->first();
+        echo($rows->company_id);
+        if($rows){
+            $com_images =CompanyImage::where('company_id',$rows->company_id)
+                        ->select(
+                            '*'
+                        )
+                        ->get();
+            $fin_images =FinancialImage::where('company_id',$rows->company_id)
+                            ->select(
+                                '*'
+                            )
+                            ->get();
+
+            $rows->com_images = $com_images;                    
+            $rows->financial_images = $fin_images;
             
+            $list->status = "200";
+            $list->msg = "success";
+            $list->data = $rows;
+        }else{
+            $list->status = "500";
+            $list->msg = "없는 정보 입니다.";
         }
 
-        echo(json_encode($return));
-
+        echo(json_encode($list));
+        
     }
+
 
     public function update(Request $request){
         //dd($request);
