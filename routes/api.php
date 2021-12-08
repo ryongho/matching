@@ -52,12 +52,17 @@ Route::post('/login', [UserController::class, 'login']);
 Route::get('login', [UserController::class, 'not_login'])->name('login');
 Route::post('/user/certify_email', [UserController::class, 'certify_email']);
 Route::get('/user/check_email_code', [UserController::class, 'check_email_code']);
+Route::middleware('auth:sanctum')->post('/profile/regist', [UserController::class, 'regist_profile']);
+Route::middleware('auth:sanctum')->post('/jobhistory/regist', [UserController::class, 'regist_jobhistory']);
 
 
 Route::middleware('auth:sanctum')->post('/logout', [UserController::class, 'logout']);
 Route::middleware('auth:sanctum')->get('/login_check', [UserController::class, 'login_check']);
 
 Route::put('/partner/regist', [PartnerController::class, 'regist']);
+
+
+
 Route::middleware('auth:sanctum')->get('/partner/list', [PartnerController::class, 'list']);
 Route::middleware('auth:sanctum')->get('/user/list', [UserController::class, 'list']);
 Route::get('/user/new_list', [UserController::class, 'new_list']);

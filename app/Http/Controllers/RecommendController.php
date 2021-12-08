@@ -45,10 +45,9 @@ class RecommendController extends Controller
 
 
         $rows = Recommend::join('company_infos', 'recommends.comapny_id', '=', 'company_infos.id')
-                        ->select('logo_img','company_name','type','com_size') 
+                        ->select('company_infos.id as company_id','logo_img','company_name','job_type') 
                         ->orderBy('order_no','asc')
                         ->get();
-
 
         $return = new \stdClass;
 

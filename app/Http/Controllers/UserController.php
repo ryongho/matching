@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\ApplyInfo;
-use App\Models\Hotel;
+use App\Models\Profile;
+use App\Models\JobHistory;
 use App\Models\EmailCode;
 use App\Models\CompanyImage;
 use App\Models\FinancialImage;
@@ -219,6 +220,97 @@ class UserController extends Controller
         echo(json_encode($return));
 
         //return view('user.profile', ['user' => User::findOrFail($id)]);
+    }
+
+    public function regist_profile(Request $request){
+        
+        $return = new \stdClass;
+        
+        $login_user = Auth::user();
+        $user_id = $login_user->getId();
+        
+            $profile_id = Profile::insertGetId([
+                'user_id'=> $user_id ,
+                'addr'=> $request->addr ,
+                'profile_img' => $request->profile_img,                 
+                'academy_type' => $request->academy_type, 
+                'academy_local' => $request->academy_local, 
+                'academy_name' => $request->academy_name, 
+                'academy_major' => $request->academy_major, 
+                'academy_time' => $request->academy_time, 
+                'introduction' => $request->introduction, 
+                'apply_motive' => $request->apply_motive, 
+                'created_at' => Carbon::now()
+            ]);
+
+            /*if($profile_id){
+                $result = JobHistory::insertGetId([
+                    'profile_id'=> $profile_id ,
+                    'company_name' => $request->company_name,                 
+                    'department' => $request->department,
+                    'local' => $request->local,
+                    'pay' => $request->pay,
+                    'job_part' => $request->job_part,
+                    'satrt_date' => $request->satrt_date,
+                    'end_date' => $request->end_date,
+                    'period_year' => $request->period_year,
+                    'period_mon' => $request->period_mon, 
+                    'created_at' => Carbon::now()
+                ]);
+
+                if($result){ //DB 입력 성공
+
+                
+                    $return->status = "200";
+                    $return->msg = "success";
+                
+                }*/
+
+            if($profile_id){ //DB 입력 성공
+
+            
+                $return->status = "200";
+                $return->msg = "success";
+            
+            }
+   
+        //}
+        
+
+        echo(json_encode($return));
+
+        //return view('user.profile', ['user' => User::findOrFail($id)]);
+    }
+
+    public function regist_jobhistory(Request $request){
+        
+        $return = new \stdClass;
+        
+        $login_user = Auth::user();
+        $user_id = $login_user->getId();
+                    
+        $result = JobHistory::insertGetId([
+            'user_id'=> $user_id ,
+            'position' => $request->position,   
+            'company_name' => $request->company_name,                 
+            'department' => $request->department,
+            'local' => $request->local,
+            'pay' => $request->pay,
+            'job_part' => $request->job_part,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'period_year' => $request->period_year,
+            'period_mon' => $request->period_mon, 
+            'created_at' => Carbon::now()
+        ]);
+
+        if($result){ //DB 입력 성공        
+            $return->status = "200";
+            $return->msg = "success";
+        }   
+
+
+        echo(json_encode($return));
     }
 
     public function login(Request $request){
