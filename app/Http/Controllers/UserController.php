@@ -511,6 +511,8 @@ class UserController extends Controller
 
     public function profile_detail(Request $request){
 
+        $list = new \stdClass;
+
         $rows = User::join('apply_infos', 'apply_infos.user_id', '=', 'users.id')
                     ->join('profiles', 'profiles.user_id', '=', 'users.id')
                     ->select(
@@ -530,8 +532,8 @@ class UserController extends Controller
                     ->where('user_type','0')
                     ->where('users.id', $request->user_id)
                     ->first();
-
-        $rows_history =Jobhistory::where('user_id',$request->user_id)
+        if($rows){
+            $rows_history =Jobhistory::where('user_id',$request->user_id)
                         ->select(
                             'user_id as user_id',
                             'id as jobhistory_id',
@@ -548,13 +550,16 @@ class UserController extends Controller
                         )
                         ->get();
         
-        $rows->jobhistories = $rows_history;                    
+            $rows->jobhistories = $rows_history;                    
 
-        $list = new \stdClass;
-
-        $list->status = "200";
-        $list->msg = "success";
-        $list->data = $rows;
+            $list->status = "200";
+            $list->msg = "success";
+            $list->data = $rows;
+        }else{
+            $list->status = "500";
+            $list->msg = "해당 정보가 없습니다.";
+        }
+        
         
         echo(json_encode($list));
         
