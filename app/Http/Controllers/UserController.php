@@ -295,30 +295,29 @@ class UserController extends Controller
                 try {
                     //Server settings
                     $mail->isSMTP();                                            // Send using SMTP
-                    $mail->Host       = 'smtp.naver.com';                    // Set the SMTP server to send through
+                    $mail->Host       = env('MAIL_HOST');                    // Set the SMTP server to send through
                     $mail->SMTPAuth   = true;                                   // Enable SMTP authentication
-                    $mail->Username   = 'yongho0720';                     // SMTP username
-                    $mail->Password   = 'dydgh123';                               // SMTP password
+                    $mail->Username   = env('MAIL_USERNAME');                     // SMTP username
+                    $mail->Password   = env('MAIL_PASSWORD');                               // SMTP password
                     $mail->CharSet = 'utf-8'; 
                     $mail->Encoding = "base64";
                     $mail->SMTPSecure = 'ssl';          
-                    $mail->Port       = 465;                                    // TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
+                    $mail->Port       = env('MAIL_PORT');                                    // TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
+                    
             
                     //Recipients
-                    $mail->setFrom('yongho0720@naver.com', '파이널매칭팀');
-            
-                    
+                    $mail->setFrom(env('MAIL_FROM_ADDRESS'), '파이널매칭팀');
+
                     $mail->addAddress($email);     // Add a recipient
                     
-            
                     // Content
                     $mail->isHTML(true);                                  // Set email format to HTML
                     $mail->Subject = $subject;
                     $mail->Body    = $content;
             
-                    $mail->send();
+                    $result = $mail->send();
                     //echo 'Message has been sent';
-                    $result =  true;
+                    //$result =  true;
                 } catch (Exception $e) {
                     //echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
                     $result = false;
