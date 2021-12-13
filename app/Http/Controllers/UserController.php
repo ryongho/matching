@@ -476,11 +476,33 @@ class UserController extends Controller
         }
     }
 
-    public function list(Request $request){
+    public function profile_list(Request $request){
         $start_no = $request->start_no;
         $row = $request->row;
         
-        $rows = User::where('id' ,">=", $start_no)->where('user_type','0')->orderBy('id', 'desc')->orderBy('id')->limit($row)->get();
+        $rows = User::join('apply_infos', 'apply_infos.user_id', '=', 'users.id')
+        ->select('users.id as user_id','name','profile_img','career_type')->where('user_type','0')->orderBy('users.id', 'desc')->limit($row)->get();
+
+        $list = new \stdClass;
+
+        $list->status = "200";
+        $list->msg = "success";
+        $list->cnt = count($rows);
+        $list->data = $rows;
+        
+        echo(json_encode($list));
+        
+    }
+
+    public function company_list(Request $request){
+        $start_no = $request->start_no;
+        $row = $request->row;
+        
+        $rows = CompanyInfo::select('company_infos.id as company_id','logo_img','company_name','job_type') 
+                            ->where('id' ,">=", $start_no)
+                            ->orderBy('id', 'desc')
+                            ->limit($row)
+                            ->get();
 
         $list = new \stdClass;
 

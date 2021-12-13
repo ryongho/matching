@@ -56,6 +56,13 @@ Route::middleware('auth:sanctum')->post('/profile/regist', [UserController::clas
 Route::middleware('auth:sanctum')->post('/jobhistory/regist', [UserController::class, 'regist_jobhistory']);
 Route::get('/profile/detail', [UserController::class, 'profile_detail']);
 Route::get('/company/detail', [UserController::class, 'company_detail']);
+Route::get('/user/new_list', [UserController::class, 'new_list']);
+Route::get('/profile/list', [UserController::class, 'profile_list']);
+Route::get('/company/list', [UserController::class, 'company_list']);
+
+Route::post('/notice/regist', [NoticeController::class, 'regist']);
+Route::get('/notice/list', [NoticeController::class, 'list']);
+Route::get('/notice/detail', [NoticeController::class, 'detail']);
 
 
 
@@ -67,8 +74,6 @@ Route::put('/partner/regist', [PartnerController::class, 'regist']);
 
 
 Route::middleware('auth:sanctum')->get('/partner/list', [PartnerController::class, 'list']);
-Route::middleware('auth:sanctum')->get('/user/list', [UserController::class, 'list']);
-Route::get('/user/new_list', [UserController::class, 'new_list']);
 Route::middleware('auth:sanctum')->get('/user/info', [UserController::class, 'info']);
 Route::middleware('auth:sanctum')->put('/user/update', [UserController::class, 'update']);
 Route::middleware('auth:sanctum')->put('/user/update_info', [UserController::class, 'update_info']);
