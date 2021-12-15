@@ -674,21 +674,71 @@ class UserController extends Controller
 
     }
 
-    public function update_info(Request $request){
+    public function update_user_info(Request $request){
         //dd($request);
         $return = new \stdClass;
 
         $return->status = "200";
         $return->msg = "변경 완료";
+
+        $login_user = Auth::user();
+        $user_id = $login_user->getId();
+
+        $apply_id = ApplyInfo::where('user_id', $user_id)->first();
         
-        $result = User::where('id', $request->user_id)->update([
-            'name'=> $request->name ,
-            'nickname'=> $request->nickname ,
-            'email' => $request->email, 
-            'phone' => $request->phone, 
-            'user_type' => $request->user_type,
-            'push' => $request->push,
-            'push_event' => $request->push_event,
+        $result = ApplyInfo::where('id', $apply_id->id)->update([
+            'addr1' => $request->addr1,                 
+            'addr2' => $request->addr2,
+            'birthday' => $request->birthday,
+            'gender' => $request->gender,
+            'career_type' => $request->career_type,
+            'last_position' => $request->last_position,
+            'interest' => $request->interest,
+            'condition' => $request->condition,
+            'min_pay' => $request->min_pay, 
+            'profile_img' => $request->profile_img
+        ]);
+
+        if(!$result){
+            $return->status = "500";
+            $return->msg = "변경 실패";
+        }
+
+        echo(json_encode($return));
+
+    }
+
+    public function update_company_info(Request $request){
+        //dd($request);
+        $return = new \stdClass;
+
+        $return->status = "200";
+        $return->msg = "변경 완료";
+
+        $login_user = Auth::user();
+        $user_id = $login_user->getId();
+
+        $company_id = CompanyInfo::where('user_id', $user_id)->first();
+        
+        $result = CompanyInfo::where('id', $company_id->id)->update([
+            'company_name' => $request->company_name,                 
+            'biz_item' => $request->biz_item,
+            'biz_type' => $request->biz_type,
+            'reg_no' => $request->reg_no,
+            'job_type' => $request->job_type,
+            'history' => $request->history,
+            'addr1' => $request->addr1,
+            'addr2' => $request->addr2,
+            'introduction' => $request->introduction, 
+            'members' => $request->members, 
+            'type' => $request->type, 
+            'com_size' => $request->com_size, 
+            'pay' => $request->pay, 
+            'condition' => $request->condition, 
+            'investment' => $request->investment, 
+            'sales' => $request->sales, 
+            'profit' => $request->profit, 
+            'logo_img' => $request->logo_img
         ]);
 
         if(!$result){

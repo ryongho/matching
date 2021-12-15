@@ -64,19 +64,18 @@ Route::post('/notice/regist', [NoticeController::class, 'regist']);
 Route::get('/notice/list', [NoticeController::class, 'list']);
 Route::get('/notice/detail', [NoticeController::class, 'detail']);
 
+Route::middleware('auth:sanctum')->put('/user/update_info', [UserController::class, 'update_user_info']);
+Route::middleware('auth:sanctum')->put('/company/update_info', [UserController::class, 'update_company_info']);
 
 
 Route::middleware('auth:sanctum')->post('/logout', [UserController::class, 'logout']);
 Route::middleware('auth:sanctum')->get('/login_check', [UserController::class, 'login_check']);
 
 Route::put('/partner/regist', [PartnerController::class, 'regist']);
-
-
-
 Route::middleware('auth:sanctum')->get('/partner/list', [PartnerController::class, 'list']);
 Route::middleware('auth:sanctum')->get('/user/info', [UserController::class, 'info']);
 Route::middleware('auth:sanctum')->put('/user/update', [UserController::class, 'update']);
-Route::middleware('auth:sanctum')->put('/user/update_info', [UserController::class, 'update_info']);
+
 Route::middleware('auth:sanctum')->put('/user/leave', [UserController::class, 'leave']);
 Route::post('/partner/login', [PartnerController::class, 'login']);
 
