@@ -23,6 +23,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\SMSController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\QuantityController;
+use App\Http\Controllers\AreaController;
 
 use App\Models\User;
 
@@ -59,6 +60,9 @@ Route::get('/company/detail', [UserController::class, 'company_detail']);
 Route::get('/user/new_list', [UserController::class, 'new_list']);
 Route::get('/profile/list', [UserController::class, 'profile_list']);
 Route::get('/company/list', [UserController::class, 'company_list']);
+
+Route::get('/area/list1', [AreaController::class, 'area_list1']);
+Route::get('/area/list2', [AreaController::class, 'area_list2']);
 
 Route::post('/notice/regist', [NoticeController::class, 'regist']);
 Route::get('/notice/list', [NoticeController::class, 'list']);
