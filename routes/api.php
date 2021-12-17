@@ -24,6 +24,7 @@ use App\Http\Controllers\SMSController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\QuantityController;
 use App\Http\Controllers\AreaController;
+use App\Http\Controllers\ApplyController;
 
 use App\Models\User;
 
@@ -71,6 +72,17 @@ Route::get('/notice/detail', [NoticeController::class, 'detail']);
 Route::middleware('auth:sanctum')->put('/user/update_info', [UserController::class, 'update_user_info']);
 Route::middleware('auth:sanctum')->put('/company/update_info', [UserController::class, 'update_company_info']);
 
+Route::middleware('auth:sanctum')->post('/apply/regist', [ApplyController::class, 'regist']);
+Route::middleware('auth:sanctum')->get('/apply/list_by_user', [ApplyController::class, 'list_by_user']);
+Route::middleware('auth:sanctum')->get('/apply/success_list_by_user', [ApplyController::class, 'success_list_by_user']);
+Route::middleware('auth:sanctum')->get('/apply/cancel_list_by_user', [ApplyController::class, 'cancel_list_by_user']);
+Route::middleware('auth:sanctum')->get('/apply/detail', [ApplyController::class, 'detail']);
+
+
+
+
+
+
 
 Route::middleware('auth:sanctum')->post('/logout', [UserController::class, 'logout']);
 Route::middleware('auth:sanctum')->get('/login_check', [UserController::class, 'login_check']);
@@ -83,7 +95,7 @@ Route::middleware('auth:sanctum')->put('/user/update', [UserController::class, '
 Route::middleware('auth:sanctum')->put('/user/leave', [UserController::class, 'leave']);
 Route::post('/partner/login', [PartnerController::class, 'login']);
 
-Route::middleware('auth:sanctum')->post('/hotel/regist', [HotelController::class, 'regist']);
+
 Route::get('/hotel/list', [HotelController::class, 'list']);
 Route::middleware('auth:sanctum')->get('/hotel/list_by_partner', [HotelController::class, 'list_by_partner']);
 Route::get('/hotel/detail', [HotelController::class, 'detail']);

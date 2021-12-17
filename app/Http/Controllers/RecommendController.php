@@ -44,7 +44,7 @@ class RecommendController extends Controller
     public function list(Request $request){
 
 
-        $rows = Recommend::join('company_infos', 'recommends.comapny_id', '=', 'company_infos.id')
+        $rows = Recommend::join('company_infos', 'recommends.company_id', '=', 'company_infos.id')
                         ->select('company_infos.id as company_id','logo_img','company_name','job_type') 
                         ->orderBy('order_no','asc')
                         ->get();
