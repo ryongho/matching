@@ -26,7 +26,7 @@ class ApplyController extends Controller
 
         $apply_info = Apply::where('company_id',$request->company_id)->where('user_id',$user_id)->first();
 
-        if($apply_info->id){
+        if(isset($apply_info->id)){
 
             $result = Apply::where('id',$apply_info->id)->update([
                 'status'=> $status 
