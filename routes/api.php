@@ -78,6 +78,11 @@ Route::middleware('auth:sanctum')->get('/apply/success_list_by_user', [ApplyCont
 Route::middleware('auth:sanctum')->get('/apply/cancel_list_by_user', [ApplyController::class, 'cancel_list_by_user']);
 Route::middleware('auth:sanctum')->get('/apply/detail', [ApplyController::class, 'detail']);
 
+Route::middleware('auth:sanctum')->get('/apply/list_by_company', [ApplyController::class, 'list_by_company']);
+Route::middleware('auth:sanctum')->get('/apply/success_list_by_company', [ApplyController::class, 'success_list_by_company']);
+Route::middleware('auth:sanctum')->get('/apply/cancel_list_by_company', [ApplyController::class, 'cancel_list_by_company']);
+Route::middleware('auth:sanctum')->get('/apply/detail_apply', [ApplyController::class, 'detail_apply']);
+
 
 
 

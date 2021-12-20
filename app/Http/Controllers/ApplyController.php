@@ -139,6 +139,92 @@ class ApplyController extends Controller
     }
 
 
+    public function list_by_company(Request $request){
+
+
+        $rows = Apply::join('apply_infos', 'apply_infos.user_id', '=', 'applies.user_id')
+                    ->join('users', 'users.id', '=', 'applies.user_id')
+                    ->select('applies.id as apply_id','applies.user_id','profile_img','users.name','addr1','addr2', 'status') 
+                    ->where('applies.company_id',$request->company_id)
+                    ->whereIn('status', ['A','R','W','SE','IW','I','L'])
+                    ->orderby('applies.created_at','desc')
+                    ->get();
+
+        $return = new \stdClass; 
+
+        $return->status = "200";
+        $return->cnt = count($rows);
+        $return->data = $rows ;
+
+        echo(json_encode($return));
+
+    }
+
+    public function success_list_by_company(Request $request){
+
+
+        $rows = Apply::join('apply_infos', 'apply_infos.user_id', '=', 'applies.user_id')
+                ->join('users', 'users.id', '=', 'applies.user_id')
+                ->select('applies.id as apply_id','applies.user_id','profile_img','users.name','addr1','addr2', 'status') 
+                ->where('applies.company_id',$request->company_id)
+                ->whereIn('status', ['S'])
+                ->orderby('applies.created_at','desc')
+                ->get();            
+
+        $return = new \stdClass; 
+
+        $return->status = "200";
+        $return->cnt = count($rows);
+        $return->data = $rows ;
+
+        echo(json_encode($return));
+
+    }
+
+    public function cancel_list_by_company(Request $request){
+
+
+        $rows = Apply::join('apply_infos', 'apply_infos.user_id', '=', 'applies.user_id')
+                ->join('users', 'users.id', '=', 'applies.user_id')
+                ->select('applies.id as apply_id','applies.user_id','profile_img','users.name','addr1','addr2', 'status') 
+                ->where('applies.company_id',$request->company_id)
+                ->whereIn('status', ['WC','RJ','IC','LC'])
+                ->orderby('applies.created_at','desc')
+                ->get();  
+
+                    
+
+        $return = new \stdClass; 
+
+        $return->status = "200";
+        $return->cnt = count($rows);
+        $return->data = $rows ;
+
+        echo(json_encode($return));
+
+    }
+
+    public function detail_apply(Request $request){
+        
+        $apply_id = $request->apply_id;
+
+        $rows = Apply::join('apply_infos', 'apply_infos.user_id', '=', 'applies.user_id')
+                    ->join('users', 'users.id', '=', 'applies.user_id')
+                    ->join('profiles', 'profiles.user_id', '=', 'applies.user_id')
+                    ->where('applies.id',$apply_id)
+                    ->select('applies.id as apply_id','applies.user_id','profiles.profile_img','users.name','addr1','addr2', 'status','gender','birthday','career_type','last_position','interest','condition','profiles.introduction' ) 
+                    ->first();
+        
+        $return = new \stdClass;
+
+        $return->status = "200";
+        $return->data = $rows ;
+
+        echo(json_encode($return));
+
+    }
+
+
 
     
 
