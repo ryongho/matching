@@ -12,6 +12,7 @@ use App\Models\EmailCode;
 use App\Models\CompanyImage;
 use App\Models\FinancialImage;
 use App\Models\CompanyInfo;
+use App\Models\Popular;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 use PHPMailer\PHPMailer\PHPMailer;
@@ -535,6 +536,23 @@ class UserController extends Controller
             'Content-Type' => 'application/json'
         ]);
         
+    }
+
+    public function popular_list(Request $request){
+        $rows = Popular::join('company_infos', 'populars.company_id', '=', 'company_infos.id')
+                        ->select('company_infos.id as company_id','logo_img','company_name','job_type') 
+                        ->orderBy('order_no','asc')
+                        ->get();
+
+        $return = new \stdClass;
+
+        $return->status = "200";
+        $return->cnt = count($rows);
+        $return->data = $rows ;
+        
+        return response()->json($return, 200)->withHeaders([
+            'Content-Type' => 'application/json'
+        ]);
     }
 
     public function new_list(Request $request){
