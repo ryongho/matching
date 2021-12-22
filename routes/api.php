@@ -4,25 +4,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\PartnerController;
-use App\Http\Controllers\HotelController;
-use App\Http\Controllers\RoomController;
-use App\Http\Controllers\GoodsController;
 use App\Http\Controllers\WishController;
-use App\Http\Controllers\ReviewController;
-use App\Http\Controllers\ViewlogController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\RecommendController;
-use App\Http\Controllers\LocalController;
 use App\Http\Controllers\NoticeController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\PolicyController;
-use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\PushController;
 use App\Http\Controllers\EventController;
-use App\Http\Controllers\SMSController;
-use App\Http\Controllers\DeviceController;
-use App\Http\Controllers\QuantityController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\ApplyController;
 
