@@ -39,7 +39,7 @@ class NoticeController extends Controller
     public function list(Request $request){
 
 
-        $rows = Notice::select('id','title','created_at')->orderby('created_at','desc')->get();
+        $rows = Notice::select('id','title','created_at','content')->orderby('created_at','desc')->get();
 
         $return = new \stdClass;
 

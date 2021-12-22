@@ -45,7 +45,7 @@ class BlogController extends Controller
 
         $todate = Carbon::now();
 
-        $rows = Blog::select('id as blog_id','title','img_src')
+        $rows = Blog::select('id as blog_id','title','img_src','content')
                 ->where('start_date' ,'<=',$todate)->where('end_date','>=',$todate)->orderBy('id','desc')
                 ->where('id','>=', $start_no)
                 ->limit($offset)

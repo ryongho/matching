@@ -16,7 +16,8 @@ class Wish extends Model
 
     protected $fillable = [
         'user_id',
-        'goods_id',
+        'company_id',
+        'profile_id',
         'created_at',
     ];
 }

@@ -88,6 +88,10 @@ Route::middleware('auth:sanctum')->get('/blog/list', [BlogController::class, 'li
 Route::middleware('auth:sanctum')->delete('/blog/delete', [BlogController::class, 'delete']);
 Route::middleware('auth:sanctum')->post('/blog/regist', [BlogController::class, 'regist']);
 
+Route::middleware('auth:sanctum')->put('/company/wish/toggle', [WishController::class, 'toggle_company']);
+Route::middleware('auth:sanctum')->put('/profile/wish/toggle', [WishController::class, 'toggle_profile']);
+Route::middleware('auth:sanctum')->get('/wish/list', [WishController::class, 'list']);
+
 
 
 
@@ -104,10 +108,7 @@ Route::middleware('auth:sanctum')->put('/user/leave', [UserController::class, 'l
 
 
 
-Route::middleware('auth:sanctum')->put('/wish/toggle', [WishController::class, 'toggle']);
-Route::middleware('auth:sanctum')->get('/wish/list', [WishController::class, 'list']);
-Route::middleware('auth:sanctum')->put('/wish/compare', [WishController::class, 'compare']);
-Route::middleware('auth:sanctum')->put('/wish/regist', [WishController::class, 'regist']);
+
 
 
 Route::middleware('auth:sanctum')->put('/push/regist', [PushController::class, 'regist']);
