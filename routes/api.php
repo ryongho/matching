@@ -13,6 +13,7 @@ use App\Http\Controllers\PolicyController;
 use App\Http\Controllers\PushController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\ApplyController;
+use App\Http\Controllers\BannerController;
 
 use App\Models\User;
 
@@ -71,6 +72,11 @@ Route::middleware('auth:sanctum')->get('/apply/list_by_company', [ApplyControlle
 Route::middleware('auth:sanctum')->get('/apply/success_list_by_company', [ApplyController::class, 'success_list_by_company']);
 Route::middleware('auth:sanctum')->get('/apply/cancel_list_by_company', [ApplyController::class, 'cancel_list_by_company']);
 Route::middleware('auth:sanctum')->get('/apply/detail_apply', [ApplyController::class, 'detail_apply']);
+
+Route::middleware('auth:sanctum')->put('/banner/update', [BannerController::class, 'update']);
+Route::middleware('auth:sanctum')->get('/banner/list', [BannerController::class, 'list']);
+Route::middleware('auth:sanctum')->delete('/banner/delete', [BannerController::class, 'delete']);
+Route::middleware('auth:sanctum')->post('/banner/regist', [BannerController::class, 'regist']);
 
 
 
