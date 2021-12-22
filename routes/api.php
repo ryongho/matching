@@ -11,7 +11,6 @@ use App\Http\Controllers\NoticeController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\PolicyController;
 use App\Http\Controllers\PushController;
-use App\Http\Controllers\EventController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\ApplyController;
 
