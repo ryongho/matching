@@ -16,7 +16,7 @@ class BlogController extends Controller
     {
         $return = new \stdClass;
 
-        $result = Banner::insertGetId([
+        $result = Blog::insertGetId([
             'title'=> $request->title ,
             'content'=> $request->content ,
             'writer'=> $request->writer ,
@@ -40,12 +40,16 @@ class BlogController extends Controller
     }
 
     public function list(Request $request){ // 메인페이지용 리스트
-        $type = $request->banner_type;
+        $start_no = $request->start_no;
+        $offset = $request->offset;
 
         $todate = Carbon::now();
 
         $rows = Blog::select('id as blog_id','title','img_src')
-                ->where('start_date' ,'<=',$todate)->where('end_date','>=',$todate)->orderBy('id','desc')->get();
+                ->where('start_date' ,'<=',$todate)->where('end_date','>=',$todate)->orderBy('id','desc')
+                ->where('id','>=', $start_no)
+                ->limit($offset)
+                ->get();
 
         $return = new \stdClass;
 
