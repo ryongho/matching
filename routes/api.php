@@ -52,6 +52,8 @@ Route::get('/company/popular_list', [UserController::class, 'popular_list']);
 Route::get('/profile/list', [UserController::class, 'profile_list']);
 Route::get('/company/list', [UserController::class, 'company_list']);
 
+Route::get('/recommend/list', [RecommendController::class, 'list']);
+
 Route::get('/area/list1', [AreaController::class, 'area_list1']);
 Route::get('/area/list2', [AreaController::class, 'area_list2']);
 

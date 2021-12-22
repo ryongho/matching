@@ -658,7 +658,7 @@ class UserController extends Controller
                             'sales',
                             'profit'
                         )->first();
-        echo($rows->company_id);
+        
         if($rows){
             $com_images =CompanyImage::where('company_id',$rows->company_id)
                         ->select(

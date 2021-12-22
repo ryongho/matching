@@ -5,23 +5,25 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Banner;
+use App\Models\Blog;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 
-class BannerController extends Controller
+class BlogController extends Controller
 {
     public function regist(Request $request)
     {
         $return = new \stdClass;
 
         $result = Banner::insertGetId([
-            'type'=> $request->banner_type ,
-            'img_url'=> $request->img_url ,
-            'order_no'=> $request->order_no,
-            'link_url'=> $request->link_url,
-            'display'=> 'Y' ,
+            'title'=> $request->title ,
+            'content'=> $request->content ,
+            'writer'=> $request->writer ,
+            'img_src'=> $request->img_src ,
+            'file_src'=> $request->file_src ,
+            'start_date'=> $request->start_date ,
+            'end_date'=> $request->end_date ,
             'created_at'=> Carbon::now(),
         ]);
 
@@ -37,10 +39,13 @@ class BannerController extends Controller
         echo(json_encode($return));
     }
 
-    public function list(Request $request){
+    public function list(Request $request){ // 메인페이지용 리스트
         $type = $request->banner_type;
 
-        $rows = Banner::select('id as banner_id','img_url','link_url','order_no',)->where('type',$type)->where('display','Y')->orderBy('order_no','asc')->get();
+        $todate = Carbon::now();
+
+        $rows = Blog::select('id as blog_id','title','img_src')
+                ->where('start_date' ,'<=',$todate)->where('end_date','>=',$todate)->orderBy('id','desc')->get();
 
         $return = new \stdClass;
 
@@ -56,12 +61,15 @@ class BannerController extends Controller
     {        
         $return = new \stdClass;
 
-        $id = $request->banner_id;
-        $result = Banner::where('id',$id)->update([
-            'order_no'=> $request->order_no ,
-            'img_url'=> $request->img_url ,
-            'link_url'=> $request->link_url ,
-            'display'=> $request->display ,
+        $id = $request->blog_id;
+
+        $result = Blog::where('id',$id)->update([
+            'title'=> $request->title ,
+            'content'=> $request->content ,
+            'img_src'=> $request->img_src ,
+            'file_src'=> $request->file_src ,
+            'start_date'=> $request->start_date ,
+            'end_date'=> $request->end_date ,
         ]);
 
         if($result){
@@ -81,8 +89,8 @@ class BannerController extends Controller
     {
         $return = new \stdClass;        
     
-        $id = $request->banner_id;
-        $result = Banner::where('id',$id)->delete();
+        $id = $request->blog_id;
+        $result = Blog::where('id',$id)->delete();
 
         if($result){
             $return->status = "200";
