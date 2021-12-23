@@ -23,6 +23,8 @@ class ApplyController extends Controller
         $user_id = $request->user_id;
         $company_id = $request->company_id;
         $status = $request->status;
+        $comment = $request->comment;
+        $phone = $request->phone;
 
         $apply_info = Apply::where('company_id',$request->company_id)->where('user_id',$user_id)->first();
 
@@ -38,6 +40,8 @@ class ApplyController extends Controller
                 'user_id'=> $user_id ,
                 'company_id'=> $company_id ,
                 'status'=> $status ,
+                'comment'=> $comment ,
+                'phone'=> $phone ,
                 'created_at'=> Carbon::now(),
             ]);      
 
