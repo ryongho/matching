@@ -13,6 +13,7 @@ use App\Models\CompanyImage;
 use App\Models\FinancialImage;
 use App\Models\CompanyInfo;
 use App\Models\Popular;
+use App\Models\SearchKeyword;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 use PHPMailer\PHPMailer\PHPMailer;
@@ -845,6 +846,11 @@ class UserController extends Controller
         $addr1 = $request->addr1;
         $biz_item = $request->biz_item;
 
+        SearchKeyword::insert([
+            'keyword'=> $keyword ,
+            'created_at' => Carbon::now()
+        ]);
+
         $rows = CompanyInfo::select('company_infos.id as company_id','logo_img','company_name','job_type') 
                             ->where('company_name' ,"like", "%".$keyword."%")
                             ->when($type, function ($query, $type) {
@@ -884,6 +890,10 @@ class UserController extends Controller
     public function profile_search(Request $request){
         $keyword = $request->keyword;
         
+        SearchKeyword::insert([
+            'keyword'=> $keyword ,
+            'created_at' => Carbon::now()
+        ]);
 
         $rows = User::join('apply_infos', 'apply_infos.user_id', '=', 'users.id')
                             ->select('users.id as user_id','name','profile_img','career_type')
@@ -924,6 +934,29 @@ class UserController extends Controller
         ]);
         
     }
+
+
+    public function search_keyword_list(Request $request){
+        $keyword = $request->keyword;
+
+        $rows = SearchKeyword::select('keyword')
+                            ->where('keyword' ,"like", "%".$keyword."%")
+                            ->get();
+                            $key = $request->key;
+
+        $list = new \stdClass;
+
+        $list->status = "200";
+        $list->msg = "success";
+        $list->cnt = count($rows);
+        $list->data = $rows;
+        
+        return response()->json($list, 200)->withHeaders([
+            'Content-Type' => 'application/json'
+        ]);
+        
+    }
+
 
     
 

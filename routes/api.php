@@ -68,6 +68,7 @@ Route::middleware('auth:sanctum')->put('/user/update_info', [UserController::cla
 Route::middleware('auth:sanctum')->put('/company/update_info', [UserController::class, 'update_company_info']);
 Route::get('/company/search', [UserController::class, 'company_search']);
 Route::get('/profile/search', [UserController::class, 'profile_search']);
+Route::get('/search/keyword/list', [UserController::class, 'search_keyword_list']);
 Route::get('/company/search_option', [UserController::class, 'search_option_company']);
 
 
