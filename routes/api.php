@@ -66,6 +66,10 @@ Route::get('/notice/detail', [NoticeController::class, 'detail']);
 
 Route::middleware('auth:sanctum')->put('/user/update_info', [UserController::class, 'update_user_info']);
 Route::middleware('auth:sanctum')->put('/company/update_info', [UserController::class, 'update_company_info']);
+Route::get('/company/search', [UserController::class, 'company_search']);
+Route::get('/profile/search', [UserController::class, 'profile_search']);
+Route::get('/company/search_option', [UserController::class, 'search_option_company']);
+
 
 Route::middleware('auth:sanctum')->post('/apply/regist', [ApplyController::class, 'regist']);
 Route::middleware('auth:sanctum')->get('/apply/list_by_user', [ApplyController::class, 'list_by_user']);

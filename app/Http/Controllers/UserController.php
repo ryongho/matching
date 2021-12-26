@@ -836,6 +836,97 @@ class UserController extends Controller
         ]);
     }
 
+    public function company_search(Request $request){
+        $keyword = $request->keyword;
+        $type = $request->type;
+        $com_size = $request->com_size;
+        $pay = $request->pay;
+        $condition = $request->condition;
+        $addr1 = $request->addr1;
+        $biz_item = $request->biz_item;
+
+        $rows = CompanyInfo::select('company_infos.id as company_id','logo_img','company_name','job_type') 
+                            ->where('company_name' ,"like", "%".$keyword."%")
+                            ->when($type, function ($query, $type) {
+                                return $query->where('type' , $type);
+                            })
+                            ->when($com_size, function ($query, $com_size) {
+                                return $query->where('com_size' , $com_size);
+                            })
+                            ->when($pay, function ($query, $pay) {
+                                return $query->where('pay' , $pay);
+                            })
+                            ->when($condition, function ($query, $condition) {
+                                return $query->where('condition' , $condition);
+                            })
+                            ->when($addr1, function ($query, $addr1) {
+                                return $query->where('addr1' , $addr1);
+                            })
+                            ->when($biz_item, function ($query, $biz_item) {
+                                return $query->where('biz_item' , $biz_item);
+                            })
+                            ->orderBy('id', 'desc')
+                            ->get();
+
+        $list = new \stdClass;
+
+        $list->status = "200";
+        $list->msg = "success";
+        $list->cnt = count($rows);
+        $list->data = $rows;
+        
+        return response()->json($list, 200)->withHeaders([
+            'Content-Type' => 'application/json'
+        ]);
+        
+    }
+
+    public function profile_search(Request $request){
+        $keyword = $request->keyword;
+        
+
+        $rows = User::join('apply_infos', 'apply_infos.user_id', '=', 'users.id')
+                            ->select('users.id as user_id','name','profile_img','career_type')
+                            ->where('user_type','0')
+                            ->where('name' ,"like", "%".$keyword."%")
+                            ->get();
+
+        $list = new \stdClass;
+
+        $list->status = "200";
+        $list->msg = "success";
+        $list->cnt = count($rows);
+        $list->data = $rows;
+        
+        return response()->json($list, 200)->withHeaders([
+            'Content-Type' => 'application/json'
+        ]);
+        
+    }
+
+    public function search_option_company(Request $request){
+        
+        $key = $request->key;
+
+        $rows = CompanyInfo::select($key) 
+                            ->distinct($key)
+                            ->get();
+
+        $list = new \stdClass;
+
+        $list->status = "200";
+        $list->msg = "success";
+        $list->cnt = count($rows);
+        $list->data = $rows;
+        
+        return response()->json($list, 200)->withHeaders([
+            'Content-Type' => 'application/json'
+        ]);
+        
+    }
+
+    
+
     
 
 
