@@ -15,6 +15,7 @@ use App\Http\Controllers\AreaController;
 use App\Http\Controllers\ApplyController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\QnaController;
 
 
 use App\Models\User;
@@ -88,9 +89,15 @@ Route::middleware('auth:sanctum')->get('/blog/list', [BlogController::class, 'li
 Route::middleware('auth:sanctum')->delete('/blog/delete', [BlogController::class, 'delete']);
 Route::middleware('auth:sanctum')->post('/blog/regist', [BlogController::class, 'regist']);
 
-Route::middleware('auth:sanctum')->put('/company/wish/toggle', [WishController::class, 'toggle_company']);
-Route::middleware('auth:sanctum')->put('/profile/wish/toggle', [WishController::class, 'toggle_profile']);
-Route::middleware('auth:sanctum')->get('/wish/list', [WishController::class, 'list']);
+Route::middleware('auth:sanctum')->put('/qna/answer', [QnaController::class, 'answer']);
+Route::middleware('auth:sanctum')->get('/qna/list', [QnaController::class, 'list']);
+Route::middleware('auth:sanctum')->post('/qna/regist', [QnaController::class, 'regist']);
+
+
+Route::middleware('auth:sanctum')->post('/wish/toggle/company', [WishController::class, 'toggle_company']);
+Route::middleware('auth:sanctum')->post('/wish/toggle/profile', [WishController::class, 'toggle_profile']);
+Route::middleware('auth:sanctum')->get('/wish/list/company', [WishController::class, 'list_company']);
+Route::middleware('auth:sanctum')->get('/wish/list/profile', [WishController::class, 'list_profile']);
 
 
 
