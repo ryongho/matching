@@ -484,6 +484,27 @@ class UserController extends Controller
         ]);
         
     }
+
+    public function user_info(){
+        $return = new \stdClass;
+        $login_user = Auth::user();
+        $user_id = $login_user->getId();
+
+        $user_info = User::select('id','name','email','phone')->where('id',$user_id)->first();
+
+        if($user_info){
+            $return->data = $user_info;
+            $return->status = "200";
+            $return->login_status = "Y";
+        }else{
+            $return->status = "500";
+            $return->login_status = "N";
+        }    
+
+        return response()->json($return, 200)->withHeaders([
+            'Content-Type' => 'application/json'
+        ]);
+    }
     
 
     public function find_user_id(Request $request){
