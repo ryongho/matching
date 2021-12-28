@@ -490,7 +490,25 @@ class UserController extends Controller
         $login_user = Auth::user();
         $user_id = $login_user->getId();
 
-        $user_info = User::select('id','name','email','phone')->where('id',$user_id)->first();
+    
+        $user_info = User::join('apply_infos', 'apply_infos.user_id', '=', 'users.id')
+                ->join('profiles', 'profiles.user_id', '=', 'users.id')
+                ->select(
+                    'users.id as id',
+                    'users.email as email',
+                    'apply_infos.addr1 as addr1',
+                    'apply_infos.addr2 as addr2',
+                    'apply_infos.birthday as birthday',
+                    'apply_infos.gender as gender',
+                    'apply_infos.career_type as career_type',
+                    'apply_infos.last_position as last_position',
+                    'apply_infos.interest as interest',
+                    'apply_infos.condition as condition',
+                    'apply_infos.min_pay as min_pay'
+                )
+                ->where('user_type','0')
+                ->where('users.id', $user_id)
+                ->first();
 
         if($user_info){
             $return->data = $user_info;
