@@ -496,6 +496,9 @@ class UserController extends Controller
                 ->select(
                     'users.id as id',
                     'users.email as email',
+                    'users.name as name',
+                    'users.email as email',
+                    'apply_infos.profile_img as profile_img',
                     'apply_infos.addr1 as addr1',
                     'apply_infos.addr2 as addr2',
                     'apply_infos.birthday as birthday',
@@ -506,6 +509,7 @@ class UserController extends Controller
                     'apply_infos.condition as condition',
                     'apply_infos.min_pay as min_pay'
                 )
+                ->where('user_type','0')
                 ->where('users.id', $user_id)
                 ->first();
 
