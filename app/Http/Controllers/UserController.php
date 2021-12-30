@@ -492,7 +492,6 @@ class UserController extends Controller
 
     
         $user_info = User::join('apply_infos', 'apply_infos.user_id', '=', 'users.id')
-                ->join('profiles', 'profiles.user_id', '=', 'users.id')
                 ->select(
                     'users.id as id',
                     'users.email as email',
