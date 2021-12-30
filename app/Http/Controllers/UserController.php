@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Hash;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -677,6 +678,14 @@ class UserController extends Controller
 
         $list = new \stdClass;
 
+        $user_id = "s";
+        
+        if($request->bearerToken() != ""){
+            $tokens = explode('|',$request->bearerToken());
+            $token_info = DB::table('personal_access_tokens')->where('id',$tokens[0])->first();
+            $user_id = $token_info->tokenable_id;
+        }
+
         
         $rows = CompanyInfo::where('company_infos.id',$request->company_id)
                         ->select(
@@ -698,7 +707,8 @@ class UserController extends Controller
                             'condition',
                             'investment',
                             'sales',
-                            'profit'
+                            'profit',
+                            DB::raw('(select count(*) from wishes where company_infos.id = wishes.company_id and wishes.user_id="'.$user_id.'" ) as wished '),
                         )->first();
         
         if($rows){
