@@ -98,7 +98,7 @@ class WishController extends Controller
 
         foreach($wishs as $wish){
             
-            $row = CompanyInfo::select('company_infos.id as company_id','logo_img','company_name','com_size','addr1','addr2')
+            $row = CompanyInfo::select('company_infos.id as company_id','logo_img','company_name','job_type','addr1','addr2')
                     ->where('id', $wish->company_id)  
                     ->first();
     
