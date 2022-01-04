@@ -344,6 +344,7 @@ class UserController extends Controller
             $return->msg = "성공";
             //$return->dormant = $login_user->dormant;
             $return->token = $token->plainTextToken;
+            $return->user_type = $login_user->user_type;
             
             //dd($token->plainTextToken);    
         }else{

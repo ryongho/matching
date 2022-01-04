@@ -91,7 +91,7 @@ Route::middleware('auth:sanctum')->post('/banner/regist', [BannerController::cla
 
 
 Route::middleware('auth:sanctum')->put('/blog/update', [BlogController::class, 'update']);
-Route::middleware('auth:sanctum')->get('/blog/list', [BlogController::class, 'list']);
+Route::get('/blog/list', [BlogController::class, 'list']);
 Route::middleware('auth:sanctum')->delete('/blog/delete', [BlogController::class, 'delete']);
 Route::middleware('auth:sanctum')->post('/blog/regist', [BlogController::class, 'regist']);
 
