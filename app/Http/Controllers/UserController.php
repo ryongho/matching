@@ -510,7 +510,6 @@ class UserController extends Controller
                     'apply_infos.condition as condition',
                     'apply_infos.min_pay as min_pay'
                 )
-                ->where('user_type','0')
                 ->where('users.id', $user_id)
                 ->first();
 
