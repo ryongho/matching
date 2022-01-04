@@ -499,6 +499,7 @@ class UserController extends Controller
                     'users.email as email',
                     'users.name as name',
                     'users.phone as phone',
+                    'users.user_type as user_type',
                     'apply_infos.profile_img as profile_img',
                     'apply_infos.addr1 as addr1',
                     'apply_infos.addr2 as addr2',
