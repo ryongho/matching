@@ -630,6 +630,8 @@ class UserController extends Controller
                         'users.id as user_id',
                         'users.name as name',
                         'apply_infos.gender as gender',
+                        'apply_infos.addr1 as addr1',
+                        'apply_infos.addr2 as addr2',
                         'apply_infos.birthday as birthday',
                         'apply_infos.career_type as career_type',
                         'apply_infos.last_position as last_position',
