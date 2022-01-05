@@ -493,7 +493,9 @@ class UserController extends Controller
         $user_id = $login_user->getId();
 
     
-        $user_info = User::join('apply_infos', 'apply_infos.user_id', '=', 'users.id')
+        $user_info = User::leftJoin('apply_infos', function($join) {
+                $join->on('users.id', '=', 'apply_infos.user_id');
+                })
                 ->select(
                     'users.id as id',
                     'users.email as email',
