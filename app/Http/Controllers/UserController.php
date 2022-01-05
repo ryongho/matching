@@ -629,7 +629,14 @@ class UserController extends Controller
                         'profiles.id as profile_id',
                         'users.id as user_id',
                         'users.name as name',
-                        'profiles.profile_img as profile_img',
+                        'apply_infos.gender as gender',
+                        'apply_infos.birthday as birthday',
+                        'apply_infos.career_type as career_type',
+                        'apply_infos.last_position as last_position',
+                        'apply_infos.interest as interest',
+                        'apply_infos.min_pay as min_pay',
+                        'apply_infos.condition as condition',
+                        'apply_infos.profile_img as profile_img',
                         'profiles.academy_type as academy_type',
                         'profiles.academy_local as academy_local',
                         'profiles.academy_name as academy_name',
@@ -643,6 +650,16 @@ class UserController extends Controller
                     ->where('users.id', $request->user_id)
                     ->first();
         if($rows){
+
+            //나이 계산 - start
+            $bs = explode("-",$rows->birthday);
+            $bs[0];
+            $dt = Carbon::now();
+            $to_year = $dt->format('Y');
+            $rows->age = $to_year - $bs[0] +1;
+            //나이 계산 - end
+
+            
             $rows_history =Jobhistory::where('user_id',$request->user_id)
                         ->select(
                             'user_id as user_id',
@@ -656,11 +673,11 @@ class UserController extends Controller
                             'start_date as start_date',
                             'end_date as end_date',
                             'period_year as period_year',
-                            'period_mon as period_mon',
+                            'period_mon as period_mon'
                         )
                         ->get();
         
-            $rows->jobhistories = $rows_history;                    
+            $rows->jobhistories = $rows_history;
 
             $list->status = "200";
             $list->msg = "success";
