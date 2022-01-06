@@ -516,8 +516,16 @@ class UserController extends Controller
                 ->where('users.id', $user_id)
                 ->first();
 
+        
+
         if($user_info){
             $return->data = $user_info;
+
+            if($user_info->user_type == 1){
+                $com_info = CompanyInfo::where('user_id',$user_info->id)->first();
+                $return->company_id = $com_info->id;
+            }
+
             $return->status = "200";
             $return->login_status = "Y";
         }else{
