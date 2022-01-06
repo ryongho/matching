@@ -192,7 +192,7 @@ class ApplyController extends Controller
                 ->join('users', 'users.id', '=', 'applies.user_id')
                 ->select('applies.id as apply_id','applies.user_id','profile_img','users.name','addr1','addr2', 'status') 
                 ->where('applies.company_id',$request->company_id)
-                ->whereIn('status', ['WC','RJ','IC','LC'])
+                ->whereIn('status', ['WC','RJ','IC','LC','AC','IR'])
                 ->orderby('applies.created_at','desc')
                 ->get();  
 
