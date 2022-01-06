@@ -110,7 +110,7 @@ class ApplyController extends Controller
         $rows = Apply::join('company_infos', 'applies.company_id', '=', 'company_infos.id')
                     ->select('applies.id as apply_id','company_infos.id as company_id','logo_img','company_name','job_type', 'status') 
                     ->where('applies.user_id',$request->user_id)
-                    ->whereIn('status', ['WC','RJ','IC','LC'])
+                    ->whereIn('status', ['WC','RJ','IC','LC','AC','IR'])
                     ->orderby('applies.created_at','desc')
                     ->get();
 
