@@ -16,7 +16,7 @@ use App\Http\Controllers\ApplyController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\QnaController;
-
+use App\Http\Controllers\PaymentController;
 
 use App\Models\User;
 
@@ -106,17 +106,13 @@ Route::middleware('auth:sanctum')->get('/wish/list/company', [WishController::cl
 Route::middleware('auth:sanctum')->get('/wish/list/profile', [WishController::class, 'list_profile']);
 
 
-
-
-
-
-
 Route::middleware('auth:sanctum')->post('/logout', [UserController::class, 'logout']);
 Route::middleware('auth:sanctum')->get('/login_check', [UserController::class, 'login_check']);
 
+Route::middleware('auth:sanctum')->post('/payment/regist', [PaymentController::class, 'regist']);
+
 
 Route::middleware('auth:sanctum')->put('/user/leave', [UserController::class, 'leave']);
-
 
 
 
