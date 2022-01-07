@@ -183,17 +183,24 @@ class UserController extends Controller
                     $no2 = 1; 
     
                     $fimages = explode(",",$request->financial_img);
+
+                    $doc_names = explode(",",$request->doc_names);
+    
                     foreach( $fimages as $fimage){
-                    
+                        
                         $result_img = FinancialImage::insertGetId([
                             'company_id'=> $result ,
                             'file_name'=> $fimage ,
                             'order_no'=> $no2 ,
+                            'doc_name'=> $doc_names[$no2-1] ,
                             'created_at' => Carbon::now()
                         ]);
     
                         $no2++;
                     }
+
+     
+    
     
 
 

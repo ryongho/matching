@@ -17,6 +17,7 @@ class FinancialImage extends Model
     protected $fillable = [
         'user_id',
         'file_name',
+        'doc_name',
         'order_no',
         'created_at'
     ];
