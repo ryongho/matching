@@ -881,7 +881,46 @@ class UserController extends Controller
             'logo_img' => $request->logo_img
         ]);
 
+        if($result){ //DB 입력 성공
+
+            $no = 1; 
+
+            $cimages = explode(",",$request->com_img);
+            foreach( $cimages as $cimage){
+            
+
+                $result_img = CompanyImage::updateOrInsert(
+                    ['company_id' => $company_id->id, 'order_no' => $no],
+                    ['file_name' => $cimage ]
+                );
+
+                $no++;
+            }
+            
+            $no2 = 1; 
+
+            $fimages = explode(",",$request->financial_img);
+
+            $doc_names = explode(",",$request->doc_names);
+
+            foreach( $fimages as $fimage){
+                
+                $result_img = FinancialImage::updateOrInsert(
+                    ['company_id' => $company_id->id, 'order_no' => $no2],
+                    ['file_name' => $fimage, 'doc_name' => $doc_names[$no2-1] ]
+                );
+                
+
+                $no2++;
+            }
+
+           
+
+        }
+
         if(!$result){
+
+
             $return->status = "500";
             $return->msg = "변경 실패";
         }
