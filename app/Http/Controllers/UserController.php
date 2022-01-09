@@ -746,6 +746,7 @@ class UserController extends Controller
                             'sales',
                             'profit',
                             DB::raw('(select count(*) from wishes where company_infos.id = wishes.company_id and wishes.user_id="'.$user_id.'" ) as wished '),
+                            DB::raw('(select phone from users where company_infos.user_id = users.id) as phone '),
                         )->first();
         
         if($rows){
