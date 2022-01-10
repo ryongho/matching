@@ -30,6 +30,10 @@ class User extends Authenticatable
         'dormant',
         'push',
         'push_event',
+        'activity',
+        'last_login',
+        'last_ip',
+        'memo',
         'updated_at',
         'created_at'
     ];

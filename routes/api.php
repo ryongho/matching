@@ -17,6 +17,7 @@ use App\Http\Controllers\BannerController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\QnaController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\AdminController;
 
 use App\Models\User;
 
@@ -39,6 +40,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 /*Route::middleware('auth:api')->put('/partner/hotel/regist', function (Request $request) {
     //return $request->partner();
 });*/
+
+Route::post('/admin/regist', [AdminController::class, 'regist']);
+Route::get('/admin/login', [AdminController::class, 'login']);
+Route::get('/admin/list', [AdminController::class, 'list']);
 
 Route::post('/user/regist', [UserController::class, 'regist']);
 Route::post('/company/regist', [UserController::class, 'regist_company']);
