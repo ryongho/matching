@@ -1095,6 +1095,25 @@ class UserController extends Controller
         
     }
 
+    public function get_corp_state(Request $request){
+        $corp_no = $request->corp_no;
+
+        $list = new \stdClass;
+
+        $state = 1;
+
+        $list->status = "200";
+        $list->msg = "success";
+        $list->state = $state;
+        $state_arr =array('없는사업자','계속사업자','휴업자','폐업자'); 
+        $list->state_msg = $state_arr[$list->state];
+
+        return response()->json($list, 200)->withHeaders([
+            'Content-Type' => 'application/json'
+        ]);
+
+    }
+
 
     
 

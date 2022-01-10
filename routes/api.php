@@ -109,6 +109,8 @@ Route::middleware('auth:sanctum')->get('/wish/list/profile', [WishController::cl
 Route::middleware('auth:sanctum')->post('/logout', [UserController::class, 'logout']);
 Route::middleware('auth:sanctum')->get('/login_check', [UserController::class, 'login_check']);
 
+Route::get('/get_corp_state', [UserController::class, 'get_corp_state']);
+
 Route::middleware('auth:sanctum')->post('/payment/regist', [PaymentController::class, 'regist']);
 
 
