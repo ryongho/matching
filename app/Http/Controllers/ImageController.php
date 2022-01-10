@@ -24,7 +24,7 @@ class ImageController extends Controller
 
         $images = array();
 
-        foreach($request->file() as $file){// 객실 이미지 업로드
+        foreach($request->file() as $file){// 이미지 업로드
 
             $images[$no] = Storage::disk('s3')->put($type."_images", $file,'public');     
             $no++;

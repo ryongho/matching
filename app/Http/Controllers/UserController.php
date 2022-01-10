@@ -886,13 +886,19 @@ class UserController extends Controller
             $no = 1; 
 
             $cimages = explode(",",$request->com_img);
+
+            CompanyImage::where('company_id', $company_id->id)->delete();
+
             foreach( $cimages as $cimage){
             
-
-                $result_img = CompanyImage::updateOrInsert(
-                    ['company_id' => $company_id->id, 'order_no' => $no],
-                    ['file_name' => $cimage ]
-                );
+                
+                $result_img = CompanyImage::insert([
+                    'company_id'=> $company_id->id ,
+                    'order_no'=> $no ,
+                    'file_name'=> $cimage ,
+                    'created_at' => Carbon::now(),
+                ]);
+                
 
                 $no++;
             }
@@ -903,13 +909,17 @@ class UserController extends Controller
 
             $doc_names = explode(",",$request->doc_names);
 
+            FinancialImage::where('company_id', $company_id->id)->delete();
+            
             foreach( $fimages as $fimage){
                 
-                $result_img = FinancialImage::updateOrInsert(
-                    ['company_id' => $company_id->id, 'order_no' => $no2],
-                    ['file_name' => $fimage, 'doc_name' => $doc_names[$no2-1] ]
-                );
-                
+                $result_img = FinancialImage::insert([
+                    'company_id'=> $company_id->id ,
+                    'order_no'=> $no2 ,
+                    'file_name'=> $fimage ,
+                    'doc_name'=> $doc_names[$no2-1] ,
+                    'created_at' => Carbon::now(),
+                ]);
 
                 $no2++;
             }
