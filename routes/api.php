@@ -41,9 +41,13 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     //return $request->partner();
 });*/
 
-Route::post('/admin/regist', [AdminController::class, 'regist']);
+Route::middleware('auth:sanctum')->post('/admin/regist', [AdminController::class, 'regist']);
 Route::get('/admin/login', [AdminController::class, 'login']);
-Route::get('/admin/list', [AdminController::class, 'list']);
+Route::get('/admin/logout', [AdminController::class, 'logout']);
+Route::middleware('auth:sanctum')->get('/admin/list', [AdminController::class, 'list']);
+Route::middleware('auth:sanctum')->get('/admin/detail', [AdminController::class, 'detail']);
+Route::middleware('auth:sanctum')->put('/admin/update', [AdminController::class, 'update']);
+Route::middleware('auth:sanctum')->put('/admin/update_password', [AdminController::class, 'update_password']);
 
 Route::post('/user/regist', [UserController::class, 'regist']);
 Route::post('/company/regist', [UserController::class, 'regist_company']);
