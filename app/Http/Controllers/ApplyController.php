@@ -36,14 +36,26 @@ class ApplyController extends Controller
 
         }else{
 
+            $dt = \Carbon\Carbon::now();
+
             $result = Apply::insertGetId([
                 'user_id'=> $user_id ,
                 'company_id'=> $company_id ,
                 'status'=> $status ,
                 'comment'=> $comment ,
                 'phone'=> $phone ,
-                'created_at'=> Carbon::now(),
-            ]);      
+                'created_at'=> $dt,
+            ]);
+            
+
+            if($result){
+                $apply_code = "A".$dt->format('Ymd').$user_id.$company_id.$result;
+                Apply::where('id',$result)->update([
+                    'apply_code'=> $apply_code,
+                ]); 
+                $return->apply_code = $apply_code;
+                $return->apply_time = $dt->format('Y-m-d H:i:s');
+            }    
 
         }
 
@@ -51,6 +63,7 @@ class ApplyController extends Controller
         if($result){ //DB 입력 성공
             $return->status = "200";
             $return->msg = "success";
+
         }else{
             $return->status = "501";
             $return->msg = "fail";

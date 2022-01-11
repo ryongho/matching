@@ -17,6 +17,7 @@ class Apply extends Model
     protected $fillable = [
         'user_id',
         'company_id',
+        'apply_code',
         'phone',
         'comment',
         'status',
