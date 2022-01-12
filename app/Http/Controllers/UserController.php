@@ -1148,7 +1148,8 @@ class UserController extends Controller
         }
 
         
-        $rows = CompanyInfo::where('company_infos.id',$request->company_id)
+        $rows = CompanyInfo::join('users', 'company_infos.user_id', '=', 'users.id')
+                        ->where('company_infos.id',$request->company_id)
                         ->select(
                             'company_infos.id as company_id',
                             'logo_img',
@@ -1169,6 +1170,7 @@ class UserController extends Controller
                             'investment',
                             'sales',
                             'profit',
+                            'email',
                             DB::raw('(select count(*) from wishes where company_infos.id = wishes.company_id and wishes.user_id="'.$user_id.'" ) as wished '),
                             DB::raw('(select phone from users where company_infos.user_id = users.id) as phone '),
                         )->first();
