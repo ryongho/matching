@@ -588,7 +588,7 @@ class UserController extends Controller
             $join->on('users.id', '=', 'company_infos.user_id');
         })
         ->whereIn('user_type',['0','1'])
-        ->where('id','>',$start_no)
+        ->where('users.id','>',$start_no)
         ->when($type, function ($query, $type) {
             if($type == "전체"){
                 return;

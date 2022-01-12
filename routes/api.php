@@ -56,6 +56,7 @@ Route::get('/admin/company/detail', [UserController::class, 'company_detail_admi
 Route::put('/admin/profile/update', [UserController::class, 'update_user_admin']);
 Route::put('/admin/jobhistory/update', [UserController::class, 'update_jobhistory_admin']);
 Route::put('/admin/company/update', [UserController::class, 'update_company_admin']);
+Route::get('/admin/apply/list', [ApplyController::class, 'list']);
 
 Route::get('/excel/download/user_list', [ExcelController::class, 'user_list']);
 

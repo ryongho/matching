@@ -84,11 +84,54 @@ class ApplyController extends Controller
     }
 
     public function list(Request $request){
+        $type = $request->type;     
+        $start_date = $request->start_date;     
+        $end_date = $request->end_date;
+        $keyword = $request->keyword;
+        $status = $request->status;
+        $apply_type = $request->apply_type;
 
+        $page_no = $request->page_no;
+        $start_no = ($page_no - 1) * 30 ;
 
         $rows = Apply::join('company_infos', 'applies.company_id', '=', 'company_infos.id')
-                    ->select('applies.id as apply_id','company_infos.id as company_id','logo_img','company_name','job_type', 'status') 
-                    ->whereIn('status', ['A','R','W','SE','IW','I','L'])
+                    ->join('users', 'users.id', '=', 'applies.user_id')
+                    ->select('applies.id as apply_id',
+                            'company_infos.id as company_id',
+                            'users.name as name',
+                            'users.email as email',
+                            'applies.apply_code',
+                            'company_infos.company_name as company_name',
+                            'company_infos.job_type as job_type',
+                            'applies.status as status',
+                            'applies.created_at as created_at'
+                            ) 
+                    ->when($type, function ($query, $type) {
+                        if($type == "전체"){
+                            return;
+                        }else{
+                            return $query->where('company_infos.job_type', $type );
+                        }
+                        
+                    })
+                    ->when($keyword, function ($query, $keyword) {
+                        return $query->where('company_name', 'like', "%".$keyword."%");
+                    })
+                    ->when($apply_type, function ($query, $apply_type) {
+                        if($apply_type == "전체"){
+                            return;
+                        }else{
+                            return $query->where('type', $apply_type);
+                        }
+                    })
+                    ->when($status, function ($query, $status) {
+                        if($status == "전체"){
+                            return;
+                        }else{
+                            return $query->where('status', $status);
+                        }
+                    })
+                    ->where('applies.id','>',$start_no) 
                     ->orderby('applies.created_at','desc')
                     ->get();
 
@@ -103,42 +146,12 @@ class ApplyController extends Controller
     }
 
     public function list_by_user(Request $request){
-        $type = $request->type;     
-        $start_date = $request->start_date;     
-        $end_date = $request->end_date;
-        $keyword = $request->keyword;
-        $status = $request->status;
 
-        $page_no = $request->page_no;
-        $start_no = ($page_no - 1) * 30 ;
 
         $rows = Apply::join('company_infos', 'applies.company_id', '=', 'company_infos.id')
-                    ->select('applies.id as apply_id',
-                            'applies.apply_code as apply_code',
-                            'company_infos.id as company_id',
-                            'logo_img',
-                            'company_name',
-                            'job_type',
-                            'status')
-                    ->when($type, function ($query, $type) {
-                        if($type == "전체"){
-                            return;
-                        }else{
-                            return $query->where('company_infos.job_type', $type );
-                        }
-                        
-                    })
-                    ->when($keyword, function ($query, $keyword) {
-                        return $query->where('company_name', 'like', "%".$keyword."%");
-                    })
-                    ->when($status, function ($query, $status) {
-                        if($type == "전체"){
-                            return;
-                        }else{
-                            return $query->where('status', $status);
-                        }
-                    })
-                    ->where('applies.id','>',$start_no) 
+                    ->select('applies.id as apply_id','company_infos.id as company_id','logo_img','company_name','job_type', 'status') 
+                    ->where('applies.user_id',$request->user_id)
+                    ->whereIn('status', ['A','R','W','SE','IW','I','L'])
                     ->orderby('applies.created_at','desc')
                     ->get();
 
