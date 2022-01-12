@@ -92,10 +92,7 @@ class ExcelController extends Controller
            
             $i++;
         }
-        
-
-        set_time_limit(120); 
-        ini_set("memory_limit", "256M");
+    
 
         error_reporting(E_ALL);
         ini_set('display_errors', TRUE);
@@ -105,9 +102,8 @@ class ExcelController extends Controller
         if (PHP_SAPI == 'cli')
             die('This example should only be run from a Web Browser');
 
-        /** Include PHPExcel */
-        //require_once dirname(__FILE__) . '/../Classes/PHPExcel.php';
-
+        set_time_limit(120); 
+        ini_set("memory_limit", "256M");
 
         // Create new PHPExcel object
         $objPHPExcel = new PHPExcel();
