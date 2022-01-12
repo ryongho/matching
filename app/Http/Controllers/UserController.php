@@ -347,6 +347,11 @@ class UserController extends Controller
 
             $token = $login_user->createToken('user');
 
+            User::where('email',$request->user_id)->update([
+                'last_login' =>Carbon::now(),
+                'last_ip' =>$request->getClientIp(),
+            ]);
+
             $return->status = "200";
             $return->msg = "성공";
             //$return->dormant = $login_user->dormant;
@@ -554,6 +559,425 @@ class UserController extends Controller
         }else{
             echo("등록되지 않은 연락처 입니다.");       
         }
+    }
+
+    public function list(Request $request){
+        $type = $request->type;     
+        $start_date = $request->start_date;     
+        $end_date = $request->end_date;
+        $keyword = $request->keyword;
+
+        $page_no = $request->page_no;
+        $start_no = ($page_no - 1) * 30 ;
+        
+        $rows = User::select(
+            'users.id as user_id',
+            'users.name as name',
+            'users.user_type as user_type',
+            'users.phone as phone',
+            'users.created_at as created_at',
+            'users.last_login as last_login',
+            'company_name as company_name',
+            'company_infos.job_type as company_type',
+            'company_infos.logo_img as logo_img',
+            'apply_infos.profile_img as profile_img',
+        )->leftJoin('apply_infos', function($join) {
+            $join->on('users.id', '=', 'apply_infos.user_id');
+        })
+        ->leftJoin('company_infos', function($join) {
+            $join->on('users.id', '=', 'company_infos.user_id');
+        })
+        ->whereIn('user_type',['0','1'])
+        ->where('id','>',$start_no)
+        ->when($type, function ($query, $type) {
+            if($type == "전체"){
+                return;
+            }else if($type == "일반회원"){
+                return $query->where('users.user_type', 0 );
+            }else{
+                return $query->where('company_infos.job_type', $type );
+            }
+            
+        })
+        ->when($keyword, function ($query, $keyword) {
+            return $query->where('company_name', 'like', "%".$keyword."%")->orWhere('users.name', 'like', "%".$keyword."%");
+        })
+        ->whereBetween('users.created_at',[$start_date.' 00:00:00',$end_date.' 23:59:59'])
+        ->orderBy('users.id', 'desc')
+        ->limit(30)
+        ->get();
+
+        $list = array();
+        $i = 0;
+
+        foreach($rows as $row){
+            
+            $list[$i]['user_id'] = $row->user_id;
+            $list[$i]['user_type'] = $row->user_type;
+            $list[$i]['phone'] = $row->phone;
+            $list[$i]['created_at'] = $row->created_at;
+            $list[$i]['last_login'] = $row->last_login;
+
+            if($row->user_type == 0){ // 일반회원
+                $list[$i]['name'] = $row->name;
+                $list[$i]['type'] = "일반회원";
+                $list[$i]['thumb_img'] = $row->profile_img;
+            }else{
+                $list[$i]['name'] = $row->company_name;
+                $list[$i]['type'] = $row->company_type;
+                $list[$i]['thumb_img'] = $row->logo_img;
+            }
+           
+            $i++;
+        }
+
+        $total = User::whereIn('user_type',['0','1'])
+        ->leftJoin('company_infos', function($join) {
+            $join->on('users.id', '=', 'company_infos.user_id');
+        })
+        ->when($type, function ($query, $type) {
+            if($type == "전체"){
+                return;
+            }else if($type == "일반회원"){
+                return $query->where('users.user_type', 0 );
+            }else{
+                return $query->where('company_infos.job_type', $type );
+            }
+            
+        })
+        ->when($keyword, function ($query, $keyword) {
+            return $query->where('company_name', 'like', "%".$keyword."%")->orWhere('users.name', 'like', "%".$keyword."%");
+        })
+        ->whereBetween('users.created_at',[$start_date.' 00:00:00',$end_date.' 23:59:59'])->count();
+
+        
+        $return = new \stdClass;
+
+        $return->status = "200";
+        $return->msg = "success";
+        $return->total = $total;
+        $return->data = $list;
+        
+        return response()->json($return, 200)->withHeaders([
+            'Content-Type' => 'application/json'
+        ]);
+        
+    }
+    
+
+    public function profile_detail_admin(Request $request){
+
+        $list = new \stdClass;
+
+        $rows = User::join('apply_infos', 'apply_infos.user_id', '=', 'users.id')
+                    ->join('profiles', 'profiles.user_id', '=', 'users.id')
+                    ->select(
+                        'profiles.id as profile_id',
+                        'users.id as user_id',
+                        'users.name as name',
+                        'users.phone as phone',
+                        'users.email as email',
+                        'users.created_at as created_at',
+                        'users.last_login as last_login',
+                        'users.updated_at as leaved_at',
+                        'users.activity as activity',
+                        'apply_infos.gender as gender',
+                        'apply_infos.addr1 as addr1',
+                        'apply_infos.addr2 as addr2',
+                        'apply_infos.birthday as birthday',
+                        'apply_infos.career_type as career_type',
+                        'apply_infos.last_position as last_position',
+                        'apply_infos.interest as interest',
+                        'apply_infos.min_pay as min_pay',
+                        'apply_infos.condition as condition',
+                        'apply_infos.profile_img as profile_img',
+                        'profiles.academy_type as academy_type',
+                        'profiles.academy_local as academy_local',
+                        'profiles.academy_name as academy_name',
+                        'profiles.academy_major as academy_major',
+                        'profiles.academy_time as academy_time',
+                        'profiles.introduction as introduction',
+                        'profiles.apply_motive as apply_motive',
+                        'profiles.addr as addr',
+                    )
+                    ->where('user_type','0')
+                    ->where('users.id', $request->user_id)
+                    ->first();
+        if($rows){
+
+            $rows_history =Jobhistory::where('user_id',$request->user_id)
+                        ->select(
+                            'user_id as user_id',
+                            'id as jobhistory_id',
+                            'position as position',
+                            'local as local',
+                            'company_name as company_name',
+                            'department as department',
+                            'pay as pay',
+                            'job_part as job_part',
+                            'start_date as start_date',
+                            'end_date as end_date',
+                            'period_year as period_year',
+                            'period_mon as period_mon'
+                        )
+                        ->get();
+        
+            $rows->jobhistories = $rows_history;
+
+            $list->status = "200";
+            $list->msg = "success";
+            $list->data = $rows;
+        }else{
+            $list->status = "500";
+            $list->msg = "해당 정보가 없습니다.";
+        }
+        
+        
+        return response()->json($list, 200)->withHeaders([
+            'Content-Type' => 'application/json'
+        ]);
+        
+    }
+
+    public function update_user_admin(Request $request){
+        
+        $return = new \stdClass;
+
+        $return->status = "500";
+        $return->msg = "관리자에게 문의";
+        $return->data = $request->user_id;
+
+        $result = User::where('id',$request->user_id)->update([
+            'activity'=> $request->activity ,
+            'name'=> $request->name ,
+        ]);
+        
+        $result2 = ApplyInfo::where('user_id',$request->user_id)->update([
+            'addr1' => $request->addr1,                 
+            'addr2' => $request->addr2,
+            'birthday' => $request->birthday,
+            'gender' => $request->gender,
+            'career_type' => $request->career_type,
+            'last_position' => $request->last_position,
+            'interest' => $request->interest,
+            'condition' => $request->condition,
+            'min_pay' => $request->min_pay, 
+            'profile_img' => $request->profile_img, 
+        ]);
+
+        $result3 = Profile::where('user_id',$request->user_id)->update([
+            'addr' => $request->addr,                 
+            'academy_type' => $request->academy_type,
+            'academy_local' => $request->academy_local,
+            'academy_name' => $request->academy_name,
+            'academy_major' => $request->academy_major,
+            'academy_time' => $request->academy_time,
+            'introduction' => $request->introduction,
+            'apply_motive' => $request->apply_motive, 
+            'profile_img' => $request->profile_img, 
+        ]);
+
+
+        if($result && $result2 && $result3){
+            $return->status = "200";
+            $return->msg = "success";
+            
+        }else{
+            $return->status = "500";
+            $return->msg = "회원 정보 변경 실패";
+        }
+
+        return response()->json($return, 200)->withHeaders([
+            'Content-Type' => 'application/json'
+        ]);
+        
+
+    }
+
+    public function update_jobhistory_admin(Request $request){
+        
+        $return = new \stdClass;
+        
+        $result = JobHistory::where('id',$request->jobhistory_id)->update([
+            'position' => $request->position,   
+            'company_name' => $request->company_name,                 
+            'department' => $request->department,
+            'local' => $request->local,
+            'pay' => $request->pay,
+            'job_part' => $request->job_part,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'period_year' => $request->period_year,
+            'period_mon' => $request->period_mon, 
+        ]);
+
+        if($result){ //DB 입력 성공        
+            $return->status = "200";
+            $return->msg = "success";
+        }else{
+            $return->status = "500";
+            $return->msg = "변경 실패";
+        }   
+
+        return response()->json($return, 200)->withHeaders([
+            'Content-Type' => 'application/json'
+        ]);
+    }
+
+    public function company_detail_admin(Request $request){
+
+        $list = new \stdClass;
+
+        $rows = CompanyInfo::join('users', 'company_infos.user_id', '=', 'users.id')
+                        ->where("users.id",$request->user_id)
+                        ->select(
+                            'company_infos.id as company_id',
+                            'users.id as user_id',
+                            'users.name as name',
+                            'users.phone as phone',
+                            'users.email as email',
+                            'users.created_at as created_at',
+                            'users.last_login as last_login',
+                            'users.updated_at as leaved_at',
+                            'users.activity as activity',
+                            'company_name',
+                            'biz_item',
+                            'biz_type',
+                            'type',
+                            'condition',
+                            'members',
+                            'introduction',
+                            'job_type',
+                            'com_size',
+                            'pay',
+                            'condition',
+                            'addr1',
+                            'addr2',
+                            'investment',
+                            'sales',
+                            'profit',
+                        )->first();
+        
+        if($rows){
+            $com_images =CompanyImage::where('company_id',$rows->company_id)
+                        ->select(
+                            '*'
+                        )
+                        ->get();
+            $fin_images =FinancialImage::where('company_id',$rows->company_id)
+                            ->select(
+                                '*'
+                            )
+                            ->get();
+
+            $rows->com_images = $com_images;                    
+            $rows->financial_images = $fin_images;
+            
+            $list->status = "200";
+            $list->msg = "success";
+            $list->data = $rows;
+        }else{
+            $list->status = "500";
+            $list->msg = "없는 정보 입니다.";
+        }
+
+        return response()->json($list, 200)->withHeaders([
+            'Content-Type' => 'application/json'
+        ]);
+        
+    }
+
+    public function update_company_admin(Request $request){
+        //dd($request);
+        $return = new \stdClass;
+
+        $return->status = "200";
+        $return->msg = "변경 완료";
+
+        $result = User::where('id',$request->user_id)->update([
+            'activity'=> $request->activity ,
+            'phone'=> $request->phone ,
+        ]);
+
+        $com_info = CompanyInfo::where('user_id', $request->user_id)->first();
+
+        $result2 = CompanyInfo::where('id', $com_info->id)->update([
+            'company_name' => $request->company_name,                 
+            'biz_item' => $request->biz_item,
+            'biz_type' => $request->biz_type,
+            'job_type' => $request->job_type,
+            'history' => $request->history,
+            'addr1' => $request->addr1,
+            'addr2' => $request->addr2,
+            'introduction' => $request->introduction, 
+            'members' => $request->members, 
+            'type' => $request->type, 
+            'com_size' => $request->com_size, 
+            'pay' => $request->pay, 
+            'condition' => $request->condition, 
+            'investment' => $request->investment, 
+            'sales' => $request->sales, 
+            'profit' => $request->profit, 
+        ]);
+
+        if($result){ //DB 입력 성공
+
+            $no = 1; 
+
+            $cimages = explode(",",$request->com_img);
+
+            CompanyImage::where('company_id', $com_info->id)->delete();
+
+            foreach( $cimages as $cimage){
+            
+                
+                $result_img = CompanyImage::insert([
+                    'company_id'=> $com_info->id ,
+                    'order_no'=> $no ,
+                    'file_name'=> $cimage ,
+                    'created_at' => Carbon::now(),
+                ]);
+                
+
+                $no++;
+            }
+            
+            $no2 = 1; 
+
+            $fimages = explode(",",$request->financial_img);
+
+            $doc_names = explode(",",$request->doc_names);
+
+            FinancialImage::where('company_id', $com_info->id)->delete();
+            
+            foreach( $fimages as $fimage){
+                
+                $result_img = FinancialImage::insert([
+                    'company_id'=> $com_info->id ,
+                    'order_no'=> $no2 ,
+                    'file_name'=> $fimage ,
+                    'doc_name'=> $doc_names[$no2-1] ,
+                    'created_at' => Carbon::now(),
+                ]);
+
+                $no2++;
+            }
+
+           
+
+        }
+
+        if(!$result){
+
+
+            $return->status = "500";
+            $return->msg = "변경 실패";
+        }
+
+        return response()->json($return, 200)->withHeaders([
+            'Content-Type' => 'application/json'
+        ]);
+
     }
 
     public function profile_list(Request $request){

@@ -18,6 +18,7 @@ use App\Http\Controllers\BlogController;
 use App\Http\Controllers\QnaController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ExcelController;
 
 use App\Models\User;
 
@@ -48,6 +49,16 @@ Route::middleware('auth:sanctum')->get('/admin/list', [AdminController::class, '
 Route::middleware('auth:sanctum')->get('/admin/detail', [AdminController::class, 'detail']);
 Route::middleware('auth:sanctum')->put('/admin/update', [AdminController::class, 'update']);
 Route::middleware('auth:sanctum')->put('/admin/update_password', [AdminController::class, 'update_password']);
+
+Route::get('/admin/user/list', [UserController::class, 'list']);
+Route::get('/admin/profile/detail', [UserController::class, 'profile_detail_admin']);
+Route::get('/admin/company/detail', [UserController::class, 'company_detail_admin']);
+Route::put('/admin/profile/update', [UserController::class, 'update_user_admin']);
+Route::put('/admin/jobhistory/update', [UserController::class, 'update_jobhistory_admin']);
+Route::put('/admin/company/update', [UserController::class, 'update_company_admin']);
+
+Route::get('/excel/download/user_list', [ExcelController::class, 'user_list']);
+
 
 Route::post('/user/regist', [UserController::class, 'regist']);
 Route::post('/company/regist', [UserController::class, 'regist_company']);
