@@ -21,6 +21,7 @@ class Apply extends Model
         'phone',
         'comment',
         'status',
+        'type',
         'created_at',
         'updated_at',
     ];
