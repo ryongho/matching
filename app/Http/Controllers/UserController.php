@@ -9,6 +9,7 @@ use App\Models\ApplyInfo;
 use App\Models\Profile;
 use App\Models\JobHistory;
 use App\Models\EmailCode;
+use App\Models\PhoneCode;
 use App\Models\CompanyImage;
 use App\Models\FinancialImage;
 use App\Models\CompanyInfo;
@@ -1538,6 +1539,50 @@ class UserController extends Controller
             'Content-Type' => 'application/json'
         ]);
 
+    }
+
+    public function certify_phone(Request $request){//휴대폰 인증 코드 발송
+        $phone = $request->phone;
+
+        $list = new \stdClass;
+
+        
+        $code = mt_rand(100000,999999);
+
+        $result_insert = PhoneCode::insertGetId([
+            'phone' => $phone, 
+            'code' => $code, 
+            'created_at' => Carbon::now(),
+        ]);
+
+        $list->status = "200";
+        $list->msg = "success";
+        //$list->state = $state;
+
+        return response()->json($list, 200)->withHeaders([
+            'Content-Type' => 'application/json'
+        ]);
+
+    }
+
+    public function check_phone_code(Request $request){ // 휴대폰 인증번호 검증
+        
+        $return = new \stdClass;
+
+        $cnt = PhoneCode::where('code',$request->code)->where('phone',$request->phone)->count();
+    
+        if($cnt){
+            $return->status = "200";
+            $return->msg = "유효한 인증입니다.";
+            PhoneCode::where('code',$request->code)->where('phone',$request->phone)->delete();
+        }else{
+            $return->status = "500";
+            $return->msg = "잘못된 인증번호 입니다.";
+        }    
+
+        return response()->json($return, 200)->withHeaders([
+            'Content-Type' => 'application/json'
+        ]);
     }
 
 
