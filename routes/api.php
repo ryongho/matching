@@ -50,13 +50,17 @@ Route::middleware('auth:sanctum')->get('/admin/detail', [AdminController::class,
 Route::middleware('auth:sanctum')->put('/admin/update', [AdminController::class, 'update']);
 Route::middleware('auth:sanctum')->put('/admin/update_password', [AdminController::class, 'update_password']);
 
-Route::get('/admin/user/list', [UserController::class, 'list']);
-Route::get('/admin/profile/detail', [UserController::class, 'profile_detail_admin']);
-Route::get('/admin/company/detail', [UserController::class, 'company_detail_admin']);
-Route::put('/admin/profile/update', [UserController::class, 'update_user_admin']);
-Route::put('/admin/jobhistory/update', [UserController::class, 'update_jobhistory_admin']);
-Route::put('/admin/company/update', [UserController::class, 'update_company_admin']);
-Route::get('/admin/apply/list', [ApplyController::class, 'list']);
+Route::middleware('auth:sanctum')->get('/admin/user/list', [UserController::class, 'list']);
+Route::middleware('auth:sanctum')->get('/admin/profile/detail', [UserController::class, 'profile_detail_admin']);
+Route::middleware('auth:sanctum')->get('/admin/company/detail', [UserController::class, 'company_detail_admin']);
+Route::middleware('auth:sanctum')->put('/admin/profile/update', [UserController::class, 'update_user_admin']);
+Route::middleware('auth:sanctum')->put('/admin/jobhistory/update', [UserController::class, 'update_jobhistory_admin']);
+Route::middleware('auth:sanctum')->put('/admin/company/update', [UserController::class, 'update_company_admin']);
+Route::middleware('auth:sanctum')->get('/admin/apply/list', [ApplyController::class, 'list']);
+Route::middleware('auth:sanctum')->get('/admin/apply/detail', [ApplyController::class, 'detail_admin']);
+Route::middleware('auth:sanctum')->get('/admin/qna/list', [QnaController::class, 'list_admin']);
+Route::middleware('auth:sanctum')->get('/admin/qna/detail', [QnaController::class, 'detail_admin']);
+Route::middleware('auth:sanctum')->put('/admin/qna/answer', [QnaController::class, 'answer']);
 
 Route::get('/excel/download/user_list', [ExcelController::class, 'user_list']);
 
@@ -118,7 +122,7 @@ Route::get('/blog/list', [BlogController::class, 'list']);
 Route::middleware('auth:sanctum')->delete('/blog/delete', [BlogController::class, 'delete']);
 Route::middleware('auth:sanctum')->post('/blog/regist', [BlogController::class, 'regist']);
 
-Route::middleware('auth:sanctum')->put('/qna/answer', [QnaController::class, 'answer']);
+
 Route::middleware('auth:sanctum')->get('/qna/list', [QnaController::class, 'list']);
 Route::middleware('auth:sanctum')->post('/qna/regist', [QnaController::class, 'regist']);
 

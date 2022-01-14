@@ -14,6 +14,7 @@ use App\Models\CompanyImage;
 use App\Models\FinancialImage;
 use App\Models\CompanyInfo;
 use App\Models\Popular;
+use App\Models\Sms;
 use App\Models\SearchKeyword;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
@@ -1555,6 +1556,13 @@ class UserController extends Controller
             'created_at' => Carbon::now(),
         ]);
 
+        $content = "파이널매칭 본인인증번호 보내드립니다.\n\n 인증번호는 : ".$code." 입니다.";
+
+        $sms = new \stdClass;
+        $sms->phone = $phone;
+        $sms->content = $content;
+        Sms::send($sms);
+
         $list->status = "200";
         $list->msg = "success";
         //$list->state = $state;
@@ -1570,7 +1578,7 @@ class UserController extends Controller
         $return = new \stdClass;
 
         $cnt = PhoneCode::where('code',$request->code)->where('phone',$request->phone)->count();
-    
+        
         if($cnt){
             $return->status = "200";
             $return->msg = "유효한 인증입니다.";

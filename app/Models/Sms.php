@@ -28,8 +28,6 @@ class Sms extends Model
         
         $_api_url = 'https://message.ppurio.com/api/send_utf8_json.php';     // UTF-8 인코딩과 JSON 응답용 호출 페이지
         
-        
-        $_param['userid'] = 'rooming';           // [필수] 뿌리오 아이디
         $_param['userid'] = env('SMS_USER_ID');           // [필수] 뿌리오 아이디
         $_param['callback'] = env('SMS_CALLBACK');    // [필수] 발신번호 - 숫자만
         $_param['phone'] = $sms->phone;       // [필수] 수신번호 - 여러명일 경우 |로 구분 '010********|010********|010********'

@@ -34,7 +34,10 @@ class QnaController extends Controller
         $return->status = "200";
         $return->added = 'Y';
 
-        echo(json_encode($return));
+        return response()->json($return, 200)->withHeaders([
+            'Content-Type' => 'application/json'
+        ]);
+
         
     }
 
@@ -57,7 +60,10 @@ class QnaController extends Controller
             $return->msg = "fail";
         }
         
-        echo(json_encode($return));
+        return response()->json($return, 200)->withHeaders([
+            'Content-Type' => 'application/json'
+        ]);
+
         
     }
 
@@ -69,6 +75,7 @@ class QnaController extends Controller
         $user_id = $login_user->getId();
          
         $rows = Qna::select('id as qna_id','title','content','type','status','created_at') 
+                    ->where('user_id',$user_id)
                     ->orderby('created_at','desc')
                     ->get();
 
@@ -77,7 +84,68 @@ class QnaController extends Controller
         $return->cnt = count($rows);
         $return->data = $rows;
 
-        echo(json_encode($return));
+        return response()->json($return, 200)->withHeaders([
+            'Content-Type' => 'application/json'
+        ]);
+
+        
+    }
+
+    public function list_admin(Request $request){
+  
+        $start_date = $request->start_date;     
+        $end_date = $request->end_date;
+        $keyword = $request->keyword;
+        
+        $page_no = $request->page_no;
+        $start_no = ($page_no - 1) * 30 ;
+
+        $return = new \stdClass;
+
+        $login_user = Auth::user();
+        $user_id = $login_user->getId();
+         
+        $rows = Qna::select('qnas.id as qna_id','title','type','status','users.name','qnas.created_at')
+                    ->join('users', 'qnas.user_id', '=', 'users.id')
+                    ->when($keyword, function ($query, $keyword) {
+                        return $query->where('title', 'like', "%".$keyword."%");
+                    })
+                    ->whereBetween('qnas.created_at',[$start_date.' 00:00:00',$end_date.' 23:59:59']) 
+                    ->where('qnas.id','>',$start_no) 
+                    ->orderby('qnas.id','desc')
+                    ->get();
+
+
+        $return->status = "200";
+        $return->cnt = count($rows);
+        $return->data = $rows;
+
+        return response()->json($return, 200)->withHeaders([
+            'Content-Type' => 'application/json'
+        ]);
+
+        
+    }
+
+    public function detail_admin(Request $request){
+  
+        $qna_id = $request->qna_id;     
+        
+        $return = new \stdClass;
+         
+        $rows = Qna::select('qnas.id as qna_id','title','type','status','users.name','users.phone','content','qnas.created_at')
+                    ->join('users', 'qnas.user_id', '=', 'users.id')
+                    ->where('qnas.id',$qna_id) 
+                    ->first();
+
+
+        $return->status = "200";
+        $return->data = $rows;
+
+        return response()->json($return, 200)->withHeaders([
+            'Content-Type' => 'application/json'
+        ]);
+
         
     }
 

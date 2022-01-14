@@ -141,8 +141,58 @@ class ApplyController extends Controller
         $return->cnt = count($rows);
         $return->data = $rows ;
 
-        echo(json_encode($return));
+        return response()->json($return, 200)->withHeaders([
+            'Content-Type' => 'application/json'
+        ]);
 
+    }
+
+    public function detail_admin(Request $request){
+        
+        $apply_id = $request->apply_id;
+
+        $rows = Apply::join('company_infos', 'applies.company_id', '=', 'company_infos.id')
+                    ->join('apply_infos', 'apply_infos.user_id', '=', 'applies.user_id')
+                    ->join('users', 'users.id', '=', 'applies.user_id')
+                    ->join('profiles', 'profiles.user_id', '=', 'applies.user_id')
+                    ->where('applies.id',$apply_id)
+                    ->select('applies.id as apply_id',
+                            'applies.user_id',
+                            'company_infos.id as company_id',
+                            'company_name',
+                            'biz_item',
+                            'biz_type',
+                            'company_infos.type',
+                            'company_infos.addr1',
+                            'company_infos.addr2',
+                            'members',
+                            'apply_infos.condition',
+                            'com_size',
+                            'investment',
+                            'sales',
+                            'profit',
+                            'pay',
+                            'status',
+                            'profiles.profile_img',
+                            'users.email',
+                            'apply_infos.addr1 as apply_addr1',
+                            'apply_infos.addr2 as apply_addr2',
+                            'status',
+                            'profiles.profile_img',
+                            'gender',
+                            'birthday',
+                            'comment',
+                    ) 
+                    ->first();
+        
+        $return = new \stdClass;
+
+        $return->status = "200";
+        $return->data = $rows ;
+
+        return response()->json($return, 200)->withHeaders([
+            'Content-Type' => 'application/json'
+        ]);
     }
 
     public function list_by_user(Request $request){
@@ -161,7 +211,9 @@ class ApplyController extends Controller
         $return->cnt = count($rows);
         $return->data = $rows ;
 
-        echo(json_encode($return));
+        return response()->json($return, 200)->withHeaders([
+            'Content-Type' => 'application/json'
+        ]);
 
     }
 
@@ -201,7 +253,9 @@ class ApplyController extends Controller
         $return->cnt = count($rows);
         $return->data = $rows ;
 
-        echo(json_encode($return));
+        return response()->json($return, 200)->withHeaders([
+            'Content-Type' => 'application/json'
+        ]);
 
     }
 
@@ -219,7 +273,9 @@ class ApplyController extends Controller
         $return->status = "200";
         $return->data = $rows ;
 
-        echo(json_encode($return));
+        return response()->json($return, 200)->withHeaders([
+            'Content-Type' => 'application/json'
+        ]);
 
     }
 
@@ -241,7 +297,9 @@ class ApplyController extends Controller
         $return->cnt = count($rows);
         $return->data = $rows ;
 
-        echo(json_encode($return));
+        return response()->json($return, 200)->withHeaders([
+            'Content-Type' => 'application/json'
+        ]);
 
     }
 
@@ -262,7 +320,9 @@ class ApplyController extends Controller
         $return->cnt = count($rows);
         $return->data = $rows ;
 
-        echo(json_encode($return));
+        return response()->json($return, 200)->withHeaders([
+            'Content-Type' => 'application/json'
+        ]);
 
     }
 
@@ -285,7 +345,9 @@ class ApplyController extends Controller
         $return->cnt = count($rows);
         $return->data = $rows ;
 
-        echo(json_encode($return));
+        return response()->json($return, 200)->withHeaders([
+            'Content-Type' => 'application/json'
+        ]);
 
     }
 
@@ -305,7 +367,9 @@ class ApplyController extends Controller
         $return->status = "200";
         $return->data = $rows ;
 
-        echo(json_encode($return));
+        return response()->json($return, 200)->withHeaders([
+            'Content-Type' => 'application/json'
+        ]);
 
     }
 
