@@ -19,6 +19,7 @@ use App\Http\Controllers\QnaController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ExcelController;
+use App\Http\Controllers\ChatController;
 
 use App\Models\User;
 
@@ -143,9 +144,8 @@ Route::middleware('auth:sanctum')->post('/payment/regist', [PaymentController::c
 
 Route::middleware('auth:sanctum')->put('/user/leave', [UserController::class, 'leave']);
 
-
-
-
+Route::middleware('auth:sanctum')->post('chat/create', [ChatController::class, 'create']);
+Route::middleware('auth:sanctum')->get('chat/list', [ChatController::class, 'list']);
 
 
 
