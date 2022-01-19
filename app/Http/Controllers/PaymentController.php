@@ -8,7 +8,7 @@ use App\Models\User;
 use App\Models\Payment;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
-
+use Illuminate\Support\Facades\DB;
 
 class PaymentController extends Controller
 {
@@ -58,21 +58,65 @@ class PaymentController extends Controller
     }
 
     public function list(Request $request){
-        $start_no = $request->start_no;
-        $row = $request->row;
+  
+        $start_date = $request->start_date;     
+        $end_date = $request->end_date;
+        $keyword = $request->keyword;
+        $status = $request->status;
         
-        $rows = User::where('id' ,">=", $start_no)->where('user_type','1')->orderBy('id', 'desc')->limit($row)->get();
+        $page_no = $request->page_no;
+        $start_no = ($page_no - 1) * 30 ;
 
-        $list = new \stdClass;
+        $type = $request->type;
 
-        $list->status = "200";
-        $list->msg = "success";
-        $list->cnt = count($rows);
-        $list->data = $rows;
-        
-        return response()->json($list, 200)->withHeaders([
+        $return = new \stdClass;
+
+        $rows = Payment::join('users', 'users.id', '=', 'payments.user_id')
+                    ->select('payments.id as payment_id','status','pg','pg_orderno',
+                    DB::raw('(select apply_code from applies where id = payments.apply_id ) as apply_code'),
+                    'buyer_name','buyer_phone','users.user_type','buyer_email','pay_type','payed_at','status','price')
+                    ->when($keyword, function ($query, $keyword) {
+                        return $query->where('users.name', 'like', "%".$keyword."%");
+                    })
+                    ->when($status, function ($query, $status) {
+                        return $query->where('status', $status);
+                    })
+                    ->whereBetween('payments.created_at',[$start_date.' 00:00:00',$end_date.' 23:59:59']) 
+                    ->where('payments.id','>',$start_no) 
+                    ->orderby('payments.id','desc')
+                    ->get();
+    
+
+        $return->status = "200";
+        $return->cnt = count($rows);
+        $return->data = $rows;
+
+        return response()->json($return, 200)->withHeaders([
             'Content-Type' => 'application/json'
-        ]);   
+        ]);
+
+        
+    }
+
+    public function detail(Request $request){
+  
+        $payment_id = $request->payment_id;     
+        
+        $return = new \stdClass;
+        
+         
+        $rows = Payment::select('status','pg','pg_orderno','apply_id','buyer_name','buyer_phone','buyer_email','pay_type','payed_at','status','price')
+                    ->where('id',$payment_id) 
+                    ->first();
+
+
+        $return->status = "200";
+        $return->data = $rows;
+
+        return response()->json($return, 200)->withHeaders([
+            'Content-Type' => 'application/json'
+        ]);
+
         
     }
 }

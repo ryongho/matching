@@ -17,11 +17,11 @@ class BannerController extends Controller
         $return = new \stdClass;
 
         $result = Banner::insertGetId([
-            'type'=> $request->banner_type ,
+            'type'=> $request->type ,
+            'title'=> $request->title ,
             'img_url'=> $request->img_url ,
             'order_no'=> $request->order_no,
             'link_url'=> $request->link_url,
-            'title'=> $request->title,
             'memo'=> $request->memo,
             'writer'=> "관리자",
             'display'=> 'Y' ,
@@ -67,10 +67,11 @@ class BannerController extends Controller
         $type = $request->type;
 
         $return = new \stdClass;
-        
-        $rows = Banner::select('id as banner_id','img_url','link_url','order_no','writer')
+
+    
+        $rows = Banner::select('id as banner_id','img_url','link_url','order_no','writer', 'type')
                     ->when($keyword, function ($query, $keyword) {
-                        return $query->where('title', 'like', "%".$keyword."%");
+                        return $query->where('type', 'like', "%".$keyword."%");
                     })
                     ->when($type, function ($query, $type) {
                         return $query->where('type', $type);
@@ -92,7 +93,7 @@ class BannerController extends Controller
         
     }
 
-    public function detail_admin(Request $request){
+    public function detail(Request $request){
   
         $banner_id = $request->banner_id;     
         
@@ -120,10 +121,12 @@ class BannerController extends Controller
 
         $id = $request->banner_id;
         $result = Banner::where('id',$id)->update([
-            //'order_no'=> $request->order_no ,
+            'order_no'=> $request->order_no ,
             'img_url'=> $request->img_url ,
             'link_url'=> $request->link_url ,
             'display'=> $request->display ,
+            'title'=> $request->title ,
+            'memo'=> $request->memo ,
         ]);
 
         if($result){
@@ -143,8 +146,8 @@ class BannerController extends Controller
     {
         $return = new \stdClass;        
     
-        $id = $request->banner_id;
-        $result = Banner::where('id',$id)->delete();
+        $ids = explode(',',$request->banner_id);
+        $result = Banner::whereIn('id',$ids)->delete();
 
         if($result){
             $return->status = "200";

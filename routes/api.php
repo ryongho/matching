@@ -78,11 +78,11 @@ Route::middleware('auth:sanctum')->get('/admin/blog/detail', [BlogController::cl
 Route::middleware('auth:sanctum')->get('/admin/blog/list', [BlogController::class, 'list_admin']);
 Route::middleware('auth:sanctum')->delete('/admin/blog/delete', [BlogController::class, 'delete']);
 Route::middleware('auth:sanctum')->post('/admin/blog/regist', [BlogController::class, 'regist']);
-
-
-
+Route::middleware('auth:sanctum')->get('/admin/payment/list', [PaymentController::class, 'list']);
+Route::middleware('auth:sanctum')->get('/admin/payment/detail', [PaymentController::class, 'detail']);
 
 Route::get('/excel/download/user_list', [ExcelController::class, 'user_list']);
+Route::get('/excel/download/payment_list', [ExcelController::class, 'payment_list']);
 
 
 Route::post('/user/regist', [UserController::class, 'regist']);
