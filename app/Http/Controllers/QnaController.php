@@ -74,7 +74,7 @@ class QnaController extends Controller
         $login_user = Auth::user();
         $user_id = $login_user->getId();
          
-        $rows = Qna::select('id as qna_id','title','content','type','status','created_at') 
+        $rows = Qna::select('id as qna_id','title','content','type','status','created_at','answer') 
                     ->where('user_id',$user_id)
                     ->orderby('created_at','desc')
                     ->get();
@@ -133,7 +133,7 @@ class QnaController extends Controller
         
         $return = new \stdClass;
          
-        $rows = Qna::select('qnas.id as qna_id','title','type','status','users.name','users.phone','content','qnas.created_at')
+        $rows = Qna::select('qnas.id as qna_id','title','type','status','users.name','users.phone','content','qnas.created_at','answer')
                     ->join('users', 'qnas.user_id', '=', 'users.id')
                     ->where('qnas.id',$qna_id) 
                     ->first();
