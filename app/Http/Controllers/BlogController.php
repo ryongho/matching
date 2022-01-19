@@ -61,6 +61,64 @@ class BlogController extends Controller
 
     }
 
+    
+
+    public function list_admin(Request $request){
+  
+        $start_date = $request->start_date;     
+        $end_date = $request->end_date;
+        $keyword = $request->keyword;
+        
+        $page_no = $request->page_no;
+        $start_no = ($page_no - 1) * 30 ;
+
+        $return = new \stdClass;
+
+        $login_user = Auth::user();
+        $user_id = $login_user->getId();
+        
+        $rows = Blog::select('id as blog_id','title','created_at','start_date','end_date')
+                    ->when($keyword, function ($query, $keyword) {
+                        return $query->where('title', 'like', "%".$keyword."%");
+                    })
+                    ->whereBetween('created_at',[$start_date.' 00:00:00',$end_date.' 23:59:59']) 
+                    ->where('id','>',$start_no) 
+                    ->orderby('id','desc')
+                    ->get();
+    
+
+        $return->status = "200";
+        $return->cnt = count($rows);
+        $return->data = $rows;
+
+        return response()->json($return, 200)->withHeaders([
+            'Content-Type' => 'application/json'
+        ]);
+
+        
+    }
+
+    public function detail(Request $request){
+  
+        $blog_id = $request->blog_id;     
+        
+        $return = new \stdClass;
+         
+        $rows = Blog::select('id as blog_id','title','created_at','start_date','end_date','img_src','file_src')
+                    ->where('id',$blog_id) 
+                    ->first();
+
+
+        $return->status = "200";
+        $return->data = $rows;
+
+        return response()->json($return, 200)->withHeaders([
+            'Content-Type' => 'application/json'
+        ]);
+
+        
+    }
+
     public function update(Request $request)
     {        
         $return = new \stdClass;
@@ -72,8 +130,6 @@ class BlogController extends Controller
             'content'=> $request->content ,
             'img_src'=> $request->img_src ,
             'file_src'=> $request->file_src ,
-            'start_date'=> $request->start_date ,
-            'end_date'=> $request->end_date ,
         ]);
 
         if($result){
@@ -93,8 +149,8 @@ class BlogController extends Controller
     {
         $return = new \stdClass;        
     
-        $id = $request->blog_id;
-        $result = Blog::where('id',$id)->delete();
+        $ids = explode(',', $request->blog_id);
+        $result = Blog::whereIn('id',$ids)->delete();
 
         if($result){
             $return->status = "200";

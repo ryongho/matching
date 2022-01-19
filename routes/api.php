@@ -62,6 +62,25 @@ Route::middleware('auth:sanctum')->get('/admin/apply/detail', [ApplyController::
 Route::middleware('auth:sanctum')->get('/admin/qna/list', [QnaController::class, 'list_admin']);
 Route::middleware('auth:sanctum')->get('/admin/qna/detail', [QnaController::class, 'detail_admin']);
 Route::middleware('auth:sanctum')->put('/admin/qna/answer', [QnaController::class, 'answer']);
+Route::middleware('auth:sanctum')->delete('/admin/qna/delete', [QnaController::class, 'delete']);
+Route::middleware('auth:sanctum')->get('/admin/notice/list', [NoticeController::class, 'list_admin']);
+Route::middleware('auth:sanctum')->get('/admin/notice/detail', [NoticeController::class, 'detail_admin']);
+Route::middleware('auth:sanctum')->delete('/admin/notice/delete', [NoticeController::class, 'delete']);
+Route::middleware('auth:sanctum')->put('/admin/notice/update', [NoticeController::class, 'update']);
+Route::middleware('auth:sanctum')->put('/admin/banner/update', [BannerController::class, 'update']);
+Route::middleware('auth:sanctum')->get('/admin/banner/list', [BannerController::class, 'list_admin']);
+Route::middleware('auth:sanctum')->delete('/admin/banner/delete', [BannerController::class, 'delete']);
+Route::middleware('auth:sanctum')->post('/admin/banner/regist', [BannerController::class, 'regist']);
+Route::middleware('auth:sanctum')->get('/admin/banner/detail', [BannerController::class, 'detail']);
+
+Route::middleware('auth:sanctum')->put('/admin/blog/update', [BlogController::class, 'update']);
+Route::middleware('auth:sanctum')->get('/admin/blog/detail', [BlogController::class, 'detail']);
+Route::middleware('auth:sanctum')->get('/admin/blog/list', [BlogController::class, 'list_admin']);
+Route::middleware('auth:sanctum')->delete('/admin/blog/delete', [BlogController::class, 'delete']);
+Route::middleware('auth:sanctum')->post('/admin/blog/regist', [BlogController::class, 'regist']);
+
+
+
 
 Route::get('/excel/download/user_list', [ExcelController::class, 'user_list']);
 
@@ -112,21 +131,13 @@ Route::middleware('auth:sanctum')->get('/apply/success_list_by_company', [ApplyC
 Route::middleware('auth:sanctum')->get('/apply/cancel_list_by_company', [ApplyController::class, 'cancel_list_by_company']);
 Route::middleware('auth:sanctum')->get('/apply/detail_apply', [ApplyController::class, 'detail_apply']);
 
-Route::middleware('auth:sanctum')->put('/banner/update', [BannerController::class, 'update']);
+
 Route::middleware('auth:sanctum')->get('/banner/list', [BannerController::class, 'list']);
-Route::middleware('auth:sanctum')->delete('/banner/delete', [BannerController::class, 'delete']);
-Route::middleware('auth:sanctum')->post('/banner/regist', [BannerController::class, 'regist']);
 
-
-Route::middleware('auth:sanctum')->put('/blog/update', [BlogController::class, 'update']);
 Route::get('/blog/list', [BlogController::class, 'list']);
-Route::middleware('auth:sanctum')->delete('/blog/delete', [BlogController::class, 'delete']);
-Route::middleware('auth:sanctum')->post('/blog/regist', [BlogController::class, 'regist']);
-
 
 Route::middleware('auth:sanctum')->get('/qna/list', [QnaController::class, 'list']);
 Route::middleware('auth:sanctum')->post('/qna/regist', [QnaController::class, 'regist']);
-
 
 Route::middleware('auth:sanctum')->post('/wish/toggle/company', [WishController::class, 'toggle_company']);
 Route::middleware('auth:sanctum')->post('/wish/toggle/profile', [WishController::class, 'toggle_profile']);

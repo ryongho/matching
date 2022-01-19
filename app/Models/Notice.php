@@ -17,6 +17,7 @@ class Notice extends Model
     protected $fillable = [
         'title',
         'content',
+        'writer',
         'img_src',
         'updated_at',
         'created_at',
