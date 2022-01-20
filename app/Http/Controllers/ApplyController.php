@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\CompanyInfo;
 use App\Models\ApplyInfo;
 use App\Models\Apply;
+use App\Models\Payment;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -150,6 +151,7 @@ class ApplyController extends Controller
     public function detail_admin(Request $request){
         
         $apply_id = $request->apply_id;
+        $return = new \stdClass;
 
         $rows = Apply::join('company_infos', 'applies.company_id', '=', 'company_infos.id')
                     ->join('apply_infos', 'apply_infos.user_id', '=', 'applies.user_id')
@@ -184,8 +186,21 @@ class ApplyController extends Controller
                             'comment',
                     ) 
                     ->first();
+
+        if($rows){
+            $payment = Payment::where('apply_id', $apply_id)
+                    ->select('status','price') 
+                    ->first();
+
+            if($payment){
+                $return->payment_status = $payment['status'] ;
+                $return->payment_price = $payment['price'] ;
+            }else{
+                $return->payment_status = "미결제" ;
+            }
+        }
         
-        $return = new \stdClass;
+        
 
         $return->status = "200";
         $return->data = $rows ;
