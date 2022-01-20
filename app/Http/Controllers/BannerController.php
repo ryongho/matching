@@ -100,7 +100,7 @@ class BannerController extends Controller
         $return = new \stdClass;
         
          
-        $rows = Banner::select('id as banner_id','img_url','link_url','order_no','writer','display')
+        $rows = Banner::select('id as banner_id','img_url','link_url','order_no','writer','display','title','memo')
                     ->where('id',$banner_id) 
                     ->first();
 
