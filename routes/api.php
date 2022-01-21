@@ -93,6 +93,7 @@ Route::post('/user/certify_email', [UserController::class, 'certify_email']);
 Route::post('/user/certify_phone', [UserController::class, 'certify_phone']);
 Route::get('/user/check_email_code', [UserController::class, 'check_email_code']);
 Route::get('/user/check_phone_code', [UserController::class, 'check_phone_code']);
+Route::get('/user/get_certify_info', [UserController::class, 'get_certify_info']);
 Route::middleware('auth:sanctum')->get('/user/info', [UserController::class, 'user_info']);
 Route::middleware('auth:sanctum')->post('/profile/regist', [UserController::class, 'regist_profile']);
 Route::middleware('auth:sanctum')->post('/jobhistory/regist', [UserController::class, 'regist_jobhistory']);

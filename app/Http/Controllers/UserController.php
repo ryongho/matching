@@ -1578,6 +1578,10 @@ class UserController extends Controller
         $return = new \stdClass;
 
         $cnt = PhoneCode::where('code',$request->code)->where('phone',$request->phone)->count();
+
+        User::where('id',$request->user_id)->update([
+            'phone_certify' =>'Y',
+        ]);
         
         if($cnt){
             $return->status = "200";
@@ -1586,6 +1590,25 @@ class UserController extends Controller
         }else{
             $return->status = "500";
             $return->msg = "잘못된 인증번호 입니다.";
+        }    
+
+        return response()->json($return, 200)->withHeaders([
+            'Content-Type' => 'application/json'
+        ]);
+    }
+
+    public function get_certify_info(Request $request){ // 휴대폰 인증 여부
+        
+        $return = new \stdClass;
+
+        $row = User::select('phone_certify')->where('id',$request->user_id)->first();
+        
+        if($row){
+            $return->status = "200";
+            $return->phone_certify = $row->phone_certify;
+        }else{
+            $return->status = "500";
+            $return->msg = "인증 조회 실패 입니다.";
         }    
 
         return response()->json($return, 200)->withHeaders([
