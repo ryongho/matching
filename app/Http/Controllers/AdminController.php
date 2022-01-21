@@ -123,9 +123,9 @@ class AdminController extends Controller
         $list = new \stdClass;
 
         if($login_user->user_type < 4){
-            $return->status = "601";
-            $return->msg = "권한이 없습니다.";
-            $return->data = "현재 유저 타입 : ".$request->user_type;
+            $list->status = "601";
+            $list->msg = "권한이 없습니다.";
+            $list->data = "현재 유저 타입 : ".$request->user_type;
         }else {
             $page_no = $request->page_no;
 
