@@ -1031,6 +1031,12 @@ class UserController extends Controller
                         ->orderBy('order_no','asc')
                         ->get();
 
+        $i=0;                
+        foreach($rows as $row){
+            $rows[$i]['comapny_images'] = CompanyImage::select('file_name')->where('company_id',$row->company_id)->orderby('order_no','asc')->get();
+            $i++;    
+        }
+                        
         $return = new \stdClass;
 
         $return->status = "200";
