@@ -71,7 +71,7 @@ class UserController extends Controller
                     'interest' => $request->interest,
                     'condition' => $request->condition,
                     'min_pay' => $request->min_pay, 
-                    'profile_img' => $request->profile_img, 
+                    'profile_img' => "profile_images/vTN3aeUUQIxoitPh6VJ6xqO9czZk4k3KFf3Dd7iu.png", 
                     'created_at' => Carbon::now()
                 ]);
 
@@ -1036,7 +1036,7 @@ class UserController extends Controller
             $rows[$i]['comapny_images'] = CompanyImage::select('file_name')->where('company_id',$row->company_id)->orderby('order_no','asc')->get();
             $i++;    
         }
-                        
+
         $return = new \stdClass;
 
         $return->status = "200";
