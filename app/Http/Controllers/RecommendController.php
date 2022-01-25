@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Recommend;
+use App\Models\CompanyImage;
 use App\Models\Goods;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
@@ -48,6 +49,12 @@ class RecommendController extends Controller
                         ->select('company_infos.id as company_id','logo_img','company_name','job_type') 
                         ->orderBy('order_no','asc')
                         ->get();
+
+        $i=0;                
+        foreach($rows as $row){
+            $rows[$i]['comapny_images'] = CompanyImage::select('file_name')->where('company_id',$row->company_id)->orderby('order_no','asc')->get();
+            $i++;    
+        }
 
         $return = new \stdClass;
 
