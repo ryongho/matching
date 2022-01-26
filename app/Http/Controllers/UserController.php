@@ -1418,12 +1418,24 @@ class UserController extends Controller
         $addr1 = $request->addr1;
         $biz_item = $request->biz_item;
 
+        $user_id = "s";
+        
+        if($request->bearerToken() != ""){
+            $tokens = explode('|',$request->bearerToken());
+            $token_info = DB::table('personal_access_tokens')->where('id',$tokens[0])->first();
+            $user_id = $token_info->tokenable_id;
+        }
+
         SearchKeyword::insert([
             'keyword'=> $keyword ,
             'created_at' => Carbon::now()
         ]);
 
-        $rows = CompanyInfo::select('company_infos.id as company_id','logo_img','company_name','job_type') 
+        
+
+        $rows = CompanyInfo::select('company_infos.id as company_id','logo_img','company_name','job_type',
+                                    DB::raw('if((select count(*) from wishes where company_infos.id = wishes.company_id and wishes.user_id="'.$user_id.'"), "Y" , "N" ) as wished '),
+                            ) 
                             ->where('company_name' ,"like", "%".$keyword."%")
                             ->when($type, function ($query, $type) {
                                 return $query->where('type' , $type);
