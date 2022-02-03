@@ -161,7 +161,7 @@ class UserController extends Controller
                     'investment' => $request->investment, 
                     'sales' => $request->sales, 
                     'profit' => $request->profit, 
-                    'logo_img' => $request->logo_img, 
+                    'logo_img' => "logo_images/WyAZLtsIyzS4oyEXM4LNvxB5ndWDHQTKaBCrrCwN.png", 
                     'created_at' => Carbon::now()
                 ]);
 
