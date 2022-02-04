@@ -103,6 +103,8 @@ Route::get('/user/new_list', [UserController::class, 'new_list']);
 Route::get('/company/popular_list', [UserController::class, 'popular_list']);
 Route::get('/profile/list', [UserController::class, 'profile_list']);
 Route::get('/company/list', [UserController::class, 'company_list']);
+Route::put('/user/update_password', [UserController::class, 'update_password']);
+
 
 Route::get('/recommend/list', [RecommendController::class, 'list']);
 

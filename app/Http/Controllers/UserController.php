@@ -1634,6 +1634,30 @@ class UserController extends Controller
         ]);
     }
 
+    public function update_password(Request $request){
+        //dd($request);
+        $return = new \stdClass;
+
+        $email = $request->email;
+
+        $user_info = User::where('email',$email)->first(); // 변경 요청 된 고객 정보
+        $user_id= $user_info->id;
+        
+        $return = new \stdClass;
+    
+        
+        $value = Hash::make($request->password);
+        $result = User::where('email', $email)->update(['password' => $value]);
+        $return->status = "200";
+        $return->updated_id = $user_id;
+        $return->updated_email = $email;
+
+        return response()->json($return, 200)->withHeaders([
+            'Content-Type' => 'application/json'
+        ]);;
+
+    }
+
 
     
 
