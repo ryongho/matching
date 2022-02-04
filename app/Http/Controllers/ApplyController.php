@@ -280,7 +280,7 @@ class ApplyController extends Controller
 
         $rows = Apply::join('company_infos', 'applies.company_id', '=', 'company_infos.id')
                     ->where('applies.id',$apply_id)
-                    ->select('applies.id as apply_id','company_infos.company_name','logo_img','introduction','job_type', 'type','com_size','pay','condition','status' ) 
+                    ->select('applies.id as apply_id','company_infos.company_name','logo_img','introduction','job_type', 'applies.type','com_size','pay','condition','status' ) 
                     ->first();
         
         $return = new \stdClass;
