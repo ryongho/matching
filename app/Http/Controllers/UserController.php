@@ -393,71 +393,65 @@ class UserController extends Controller
 
         $email_cnt = User::where('email',$email)->count();
 
-        if($email_cnt){
-            $return->usable = "500";
-            $return->msg = "이미 사용중인 이메일입니다.";
-            $return->email = $email;
-        }else{
+        $code = mt_rand(100000,999999);
+        $result_insert = EmailCode::insertGetId([
+            'email' => $email, 
+            'code' => $code, 
+            'created_at' => Carbon::now(),
+        ]);
 
-            $code = mt_rand(100000,999999);
-            $result_insert = EmailCode::insertGetId([
-                'email' => $email, 
-                'code' => $code, 
-                'created_at' => Carbon::now(),
-            ]);
-
-            if($result_insert){
-                $title = "[파이널매칭] 메일 인증 번호"; 
-                $subject = "=?EUC-KR?B?".base64_encode(iconv("UTF-8","EUC-KR",$title))."?=";
-                
-                $content = "파이널매칭 메일 인증 번호 보내드립니다.\n\n 인증번호는 : ".$code." 입니다.";
-                
-                $mail = new PHPMailer(true);         
-                
-                try {
-                    //Server settings
-                    $mail->isSMTP();                                            // Send using SMTP
-                    $mail->Host       = env('MAIL_HOST');                    // Set the SMTP server to send through
-                    $mail->SMTPAuth   = true;                                   // Enable SMTP authentication
-                    $mail->Username   = env('MAIL_USERNAME');                     // SMTP username
-                    $mail->Password   = env('MAIL_PASSWORD');                               // SMTP password
-                    $mail->CharSet = 'utf-8'; 
-                    $mail->Encoding = "base64";
-                    $mail->SMTPSecure = 'ssl';          
-                    $mail->Port       = env('MAIL_PORT');                                    // TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
-                    
+        if($result_insert){
+            $title = "[파이널매칭] 메일 인증 번호"; 
+            $subject = "=?EUC-KR?B?".base64_encode(iconv("UTF-8","EUC-KR",$title))."?=";
             
-                    //Recipients
-                    $mail->setFrom(env('MAIL_FROM_ADDRESS'), '파이널매칭팀');
-
-                    $mail->addAddress($email);     // Add a recipient
-                    
-                    // Content
-                    $mail->isHTML(true);                                  // Set email format to HTML
-                    $mail->Subject = $subject;
-                    $mail->Body    = $content;
+            $content = "파이널매칭 메일 인증 번호 보내드립니다.\n\n 인증번호는 : ".$code." 입니다.";
             
-                    $result = $mail->send();
-                    //echo 'Message has been sent';
-                    //$result =  true;
-                } catch (Exception $e) {
-                    //echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
-                    $result = false;
-                }
+            $mail = new PHPMailer(true);         
+            
+            try {
+                //Server settings
+                $mail->isSMTP();                                            // Send using SMTP
+                $mail->Host       = env('MAIL_HOST');                    // Set the SMTP server to send through
+                $mail->SMTPAuth   = true;                                   // Enable SMTP authentication
+                $mail->Username   = env('MAIL_USERNAME');                     // SMTP username
+                $mail->Password   = env('MAIL_PASSWORD');                               // SMTP password
+                $mail->CharSet = 'utf-8'; 
+                $mail->Encoding = "base64";
+                $mail->SMTPSecure = 'ssl';          
+                $mail->Port       = env('MAIL_PORT');                                    // TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
                 
-                if($result){
-                    $return->status = "200";
-                    $return->msg = "메일이 발송되었습니다.";
-                }else{
-                    $return->status = "500";
-                    $return->msg = "인증메일 발송 실패";
-                } 
+        
+                //Recipients
+                $mail->setFrom(env('MAIL_FROM_ADDRESS'), '파이널매칭팀');
+
+                $mail->addAddress($email);     // Add a recipient
+                
+                // Content
+                $mail->isHTML(true);                                  // Set email format to HTML
+                $mail->Subject = $subject;
+                $mail->Body    = $content;
+        
+                $result = $mail->send();
+                //echo 'Message has been sent';
+                //$result =  true;
+            } catch (Exception $e) {
+                //echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+                $result = false;
+            }
+            
+            if($result){
+                $return->status = "200";
+                $return->msg = "메일이 발송되었습니다.";
             }else{
                 $return->status = "500";
-                $return->msg = "코드발급 실패, 관리자에게 문의하세요.";
-            }
-                       
+                $return->msg = "인증메일 발송 실패";
+            } 
+        }else{
+            $return->status = "500";
+            $return->msg = "코드발급 실패, 관리자에게 문의하세요.";
         }
+                       
+        
 
         return response()->json($return, 200)->withHeaders([
             'Content-Type' => 'application/json'
