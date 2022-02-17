@@ -401,10 +401,10 @@ class UserController extends Controller
         ]);
 
         if($result_insert){
-            $title = "[파이널매칭] 메일 인증 번호"; 
+            $title = "[파이널매치] 메일 인증 번호"; 
             $subject = "=?EUC-KR?B?".base64_encode(iconv("UTF-8","EUC-KR",$title))."?=";
             
-            $content = "파이널매칭 메일 인증 번호 보내드립니다.\n\n 인증번호는 : ".$code." 입니다.";
+            $content = "파이널매치 메일 인증 번호 보내드립니다.\n\n 인증번호는 : ".$code." 입니다.";
             
             $mail = new PHPMailer(true);         
             
@@ -422,7 +422,7 @@ class UserController extends Controller
                 
         
                 //Recipients
-                $mail->setFrom(env('MAIL_FROM_ADDRESS'), '파이널매칭팀');
+                $mail->setFrom(env('MAIL_FROM_ADDRESS'), '파이널매치');
 
                 $mail->addAddress($email);     // Add a recipient
                 
@@ -1568,7 +1568,7 @@ class UserController extends Controller
             'created_at' => Carbon::now(),
         ]);
 
-        $content = "파이널매칭 본인인증번호 보내드립니다.\n\n 인증번호는 : ".$code." 입니다.";
+        $content = "파이널매치 본인인증번호 보내드립니다.\n\n 인증번호는 : ".$code." 입니다.";
 
         $sms = new \stdClass;
         $sms->phone = $phone;
