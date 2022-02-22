@@ -135,7 +135,7 @@ Route::middleware('auth:sanctum')->get('/apply/cancel_list_by_company', [ApplyCo
 Route::middleware('auth:sanctum')->get('/apply/detail_apply', [ApplyController::class, 'detail_apply']);
 
 
-Route::middleware('auth:sanctum')->get('/banner/list', [BannerController::class, 'list']);
+Route::get('/banner/list', [BannerController::class, 'list']);
 
 Route::get('/blog/list', [BlogController::class, 'list']);
 
