@@ -20,6 +20,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ExcelController;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\JobhistoryController;
 
 use App\Models\User;
 
@@ -133,6 +134,8 @@ Route::middleware('auth:sanctum')->get('/apply/list_by_company', [ApplyControlle
 Route::middleware('auth:sanctum')->get('/apply/success_list_by_company', [ApplyController::class, 'success_list_by_company']);
 Route::middleware('auth:sanctum')->get('/apply/cancel_list_by_company', [ApplyController::class, 'cancel_list_by_company']);
 Route::middleware('auth:sanctum')->get('/apply/detail_apply', [ApplyController::class, 'detail_apply']);
+
+Route::middleware('auth:sanctum')->get('/jobhistory/list', [JobhistoryController::class, 'list']);
 
 
 Route::get('/banner/list', [BannerController::class, 'list']);
