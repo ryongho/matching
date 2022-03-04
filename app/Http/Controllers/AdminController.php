@@ -130,7 +130,7 @@ class AdminController extends Controller
             $page_no = $request->page_no;
 
             $start_no = ($page_no - 1) * 30 ;
-            $rows = User::select('id','activity','user_type','email as user_id','name','created_at','last_login','last_ip')
+            $rows = User::select('id','activity','user_type','email as user_id','name','memo','created_at','last_login','last_ip')
             ->whereIn('user_type',['3','4'])
             ->where('id','>',$start_no)
             ->orderBy('id', 'desc')
