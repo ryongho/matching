@@ -832,6 +832,7 @@ class UserController extends Controller
                             'users.name as name',
                             'users.phone as phone',
                             'users.email as email',
+                            'users.user_type as user_type',
                             'users.created_at as created_at',
                             'users.last_login as last_login',
                             'users.updated_at as leaved_at',
